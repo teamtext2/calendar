@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Text2 — Lịch xịn</title>
+  <style>
+    /* Reset + base */
+    :root{
+      --bg:#0f1724; --card:#0b1220; --muted:#98a8bf; --accent1:#7c5cff; --accent2:#3dd3c1; --glass: rgba(255,255,255,0.04);
+      --radius:14px; --shadow: 0 8px 30px rgba(2,6,23,0.6);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,#071025 0%, #071129 55%, #081226 100%);color:#e6eef8}
+    a{color:inherit}
+
+    /* App frame */
+    .app{max-width:1100px;margin:28px auto;padding:28px;border-radius:20px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));box-shadow:var(--shadow);display:grid;grid-template-columns:1fr 360px;gap:22px}
+
+    /* Header */
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .title{display:flex;gap:12px;align-items:center}
+    .brand{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:700}
+    .brand span{filter:drop-shadow(0 6px 18px rgba(124,92,255,0.34));}
+    h1{margin:0;font-size:20px}
+    p.lead{margin:0;color:var(--muted);font-size:13px}
+
+    /* Controls */
+    .controls{display:flex;gap:8px;align-items:center}
+    .btn{background:var(--glass);padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.02);cursor:pointer}
+    .btn.primary{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#041223;font-weight:600;border:none}
+    .nav{display:flex;gap:6px;align-items:center}
+
+    /* Calendar */
+    .calendar{background:rgba(255,255,255,0.02);padding:18px;border-radius:16px}
+    .calendar .weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:8px}
+    .weekday{font-size:12px;color:var(--muted);text-align:center}
+    .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+    .day{min-height:86px;background:transparent;border-radius:12px;padding:8px;position:relative;transition:transform .15s}
+    .day:hover{transform:translateY(-4px)}
+    .day .num{position:absolute;top:8px;left:8px;font-weight:700}
+    .day.inactive{color:rgba(230,238,248,0.32)}
+    .day.today{box-shadow:inset 0 0 0 2px rgba(61,211,193,0.08);border:1px solid rgba(61,211,193,0.12)}
+
+    /* Event pill */
+    .event-pill{display:block;margin-top:28px;font-size:12px;padding:6px 8px;border-radius:999px;max-width:88%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border:1px solid rgba(255,255,255,0.03)}
+    .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:middle}
+
+    /* Sidebar */
+    aside{display:flex;flex-direction:column;gap:12px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));padding:12px;border-radius:12px}
+    .mini{display:flex;align-items:center;justify-content:space-between}
+    .events-list{max-height:420px;overflow:auto;padding-right:6px}
+    .ev-item{padding:10px;border-radius:10px;margin-bottom:8px;background:rgba(255,255,255,0.02);display:flex;align-items:center;gap:10px}
+    .ev-item .meta{font-size:12px;color:var(--muted)}
+
+    /* Modal */
+    .modal-backdrop{position:fixed;inset:0;background:linear-gradient(0deg, rgba(2,6,23,0.6), rgba(2,6,23,0.6));display:none;align-items:center;justify-content:center}
+    .modal{width:420px;background:#071428;border-radius:12px;padding:16px;box-shadow:0 10px 40px rgba(2,6,23,0.7)}
+    .field{margin-bottom:8px}
+    input,textarea,select{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+
+    /* Tiny helpers */
+    .muted{color:var(--muted);font-size:13px}
+    .flex{display:flex;gap:8px;align-items:center}
+    .right{margin-left:auto}
+
+    /* Responsive */
+    @media (max-width:980px){.app{grid-template-columns:1fr; padding:16px}aside{order:2}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div>
+      <header>
+        <div class="title">
+          <div class="brand"><span>t2</span></div>
+          <div>
+            <h1>Text2 — Lịch xịn</h1>
+            <p class="lead">Gọn, sang, dễ dùng — cho hệ sinh thái Text2</p>
+          </div>
+        </div>
+        <div class="controls">
+          <div class="nav">
+            <button class="btn" id="prev">◀</button>
+            <div style="padding:10px 14px;border-radius:10px;background:rgba(255,255,255,0.02);display:flex;align-items:center;gap:10px">
+              <strong id="curMonth">Tháng</strong>
+              <span class="muted" id="curYear">2025</span>
+            </div>
+            <button class="btn" id="next">▶</button>
+          </div>
+          <button class="btn primary" id="addEventBtn">+ Thêm sự kiện</button>
+        </div>
+      </header>
+
+      <main style="margin-top:16px">
+        <div class="calendar card">
+          <div class="weekdays" id="weekdays"></div>
+          <div class="grid" id="daysGrid"></div>
+        </div>
+      </main>
+    </div>
+
+    <aside>
+      <div class="card mini">
+        <div>
+          <div class="muted">Hôm nay</div>
+          <div style="font-weight:700" id="todayPretty">—</div>
+        </div>
+        <div class="flex">
+          <button class="btn" id="gotoToday">Today</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div style="font-weight:700">Sự kiện sắp tới</div>
+          <div class="muted" id="evtCount">0</div>
+        </div>
+        <div class="events-list" id="eventsList">
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="font-weight:700;margin-bottom:8px">Mẹo dùng</div>
+        <div class="muted">• Nhấn vào ô ngày để xem/ thêm sự kiện. <br>• Dữ liệu được lưu vào trình duyệt (localStorage).<br>• Muốn xuất dữ liệu? Mình sẽ thêm export/import nếu bạn muốn 😎</div>
+      </div>
+    </aside>
+
+    <!-- Modal -->
+    <div class="modal-backdrop" id="modal">
+      <div class="modal">
+        <h3 id="modalTitle">Thêm sự kiện</h3>
+        <div class="field">
+          <label class="muted">Tiêu đề</label>
+          <input id="evTitle" placeholder="Ví dụ: Họp đội" />
+        </div>
+        <div class="field">
+          <label class="muted">Mô tả</label>
+          <textarea id="evDesc" rows="3" placeholder="Chi tiết ngắn"></textarea>
+        </div>
+        <div class="field">
+          <label class="muted">Ngày</label>
+          <input id="evDate" type="date" />
+        </div>
+        <div class="field">
+          <label class="muted">Giờ (tùy chọn)</label>
+          <input id="evTime" type="time" />
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:6px">
+          <button class="btn" id="cancelBtn">Hủy</button>
+          <button class="btn primary" id="saveBtn">Lưu</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+  // Tiny calendar app — single-file. Lưu trữ bằng localStorage.
+  (function(){
+    const localeVN = {weekdays: ['CN','T2','T3','T4','T5','T6','T7'], months: ['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12']}
+    const state = {viewDate: new Date(), events: []}
+    const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
+
+    // Elements
+    const weekdaysEl = document.getElementById('weekdays')
+    const daysGrid = document.getElementById('daysGrid')
+    const curMonth = document.getElementById('curMonth')
+    const curYear = document.getElementById('curYear')
+    const todayPretty = document.getElementById('todayPretty')
+    const eventsList = document.getElementById('eventsList')
+    const evtCount = document.getElementById('evtCount')
+
+    const modal = document.getElementById('modal')
+    const addEventBtn = document.getElementById('addEventBtn')
+    const cancelBtn = document.getElementById('cancelBtn')
+    const saveBtn = document.getElementById('saveBtn')
+    const evTitle = document.getElementById('evTitle')
+    const evDesc = document.getElementById('evDesc')
+    const evDate = document.getElementById('evDate')
+    const evTime = document.getElementById('evTime')
+    const modalTitle = document.getElementById('modalTitle')
+
+    const prev = document.getElementById('prev')
+    const next = document.getElementById('next')
+    const gotoToday = document.getElementById('gotoToday')
+
+    // Load
+    function load(){
+      try{state.events = JSON.parse(localStorage.getItem('t2_calendar_v1')||'[]')}catch(e){state.events=[]}
+    }
+    function save(){localStorage.setItem('t2_calendar_v1', JSON.stringify(state.events))}
+
+    // Render weekdays
+    function renderWeekdays(){weekdaysEl.innerHTML = '';
+      for(let i=0;i<7;i++){const el = document.createElement('div');el.className='weekday';el.textContent = localeVN.weekdays[i];weekdaysEl.appendChild(el)}
+    }
+
+    // Helpers
+    function startOfMonth(d){return new Date(d.getFullYear(), d.getMonth(),1)}
+    function endOfMonth(d){return new Date(d.getFullYear(), d.getMonth()+1,0)}
+    function sameDay(a,b){return a.getFullYear()==b.getFullYear()&&a.getMonth()==b.getMonth()&&a.getDate()==b.getDate()}
+    function formatPretty(d){return d.toLocaleDateString('vi-VN',{weekday:'short',day:'numeric',month:'short'})}
+
+    // Render calendar grid
+    function renderCalendar(){
+      daysGrid.innerHTML=''
+      const view = state.viewDate
+      const start = startOfMonth(view)
+      const end = endOfMonth(view)
+      const startWeek = start.getDay() // 0..6 (Sun..Sat)
+      const daysInMonth = end.getDate()
+
+      curMonth.textContent = localeVN.months[view.getMonth()]
+      curYear.textContent = view.getFullYear()
+      todayPretty.textContent = formatPretty(new Date())
+
+      // previous month days fill
+      const prevMonthLastDay = new Date(view.getFullYear(), view.getMonth(), 0).getDate()
+      const totalCells = Math.ceil((startWeek + daysInMonth)/7)*7
+
+      for(let cell=0;cell<totalCells;cell++){
+        const cellEl = document.createElement('div');cellEl.className='day card'
+        const dayNum = cell - startWeek + 1
+        let cellDate
+        if(dayNum <= 0){ // prev month
+          cellDate = new Date(view.getFullYear(), view.getMonth()-1, prevMonthLastDay + dayNum)
+          cellEl.classList.add('inactive')
+        }else if(dayNum > daysInMonth){ // next month
+          cellDate = new Date(view.getFullYear(), view.getMonth()+1, dayNum - daysInMonth)
+          cellEl.classList.add('inactive')
+        }else{
+          cellDate = new Date(view.getFullYear(), view.getMonth(), dayNum)
+        }
+        const num = document.createElement('div');num.className='num';num.textContent = cellDate.getDate();cellEl.appendChild(num)
+
+        // events for date
+        const evs = eventsForDate(cellDate)
+        evs.slice(0,2).forEach(ev=>{
+          const pill = document.createElement('span');pill.className='event-pill'
+          pill.title = ev.title + (ev.time?(' • '+ev.time):'') + '\n'+(ev.desc||'')
+          const dot = document.createElement('i');dot.className='dot';dot.style.background = ev.color || 'linear-gradient(90deg,var(--accent1),var(--accent2))'
+          pill.appendChild(dot)
+          const txt = document.createElement('span');txt.textContent = ev.title
+          pill.appendChild(txt)
+          cellEl.appendChild(pill)
+        })
+
+        if(sameDay(cellDate,new Date())) cellEl.classList.add('today')
+
+        cellEl.addEventListener('click', ()=> openModalForDate(cellDate))
+
+        daysGrid.appendChild(cellEl)
+      }
+
+    }
+
+    // Events
+    function eventsForDate(d){
+      const key = keyForDate(d)
+      return state.events.filter(e=>e.dateKey===key).sort((a,b)=> (a.time||'') > (b.time||'') ? 1 : -1)
+    }
+    function keyForDate(d){return d.getFullYear()+'-'+(d.getMonth()+1).toString().padStart(2,'0')+'-'+d.getDate().toString().padStart(2,'0')}
+
+    function renderEventsList(){
+      eventsList.innerHTML=''
+      const sorted = state.events.slice().sort((a,b)=> a.dateKey.localeCompare(b.dateKey) || (a.time||'').localeCompare(b.time||''))
+      evtCount.textContent = sorted.length
+      if(sorted.length===0){eventsList.innerHTML = '<div class="muted">Không có sự kiện nào. Thêm thử nhé!</div>';return}
+
+      sorted.forEach(ev=>{
+        const it = document.createElement('div');it.className='ev-item'
+        const col = document.createElement('div');col.className='dot';col.style.background = ev.color || 'linear-gradient(90deg,var(--accent1),var(--accent2))'
+        it.appendChild(col)
+        const body = document.createElement('div')
+        body.innerHTML = `<div style="font-weight:700">${ev.title}</div><div class='meta'>${ev.dateKey}${ev.time?(' • '+ev.time):''}${ev.desc?('<br>'+ev.desc):''}</div>`
+        it.appendChild(body)
+
+        const controls = document.createElement('div');controls.className='right'
+        const edit = document.createElement('button');edit.className='btn';edit.textContent='Sửa';
+        const del = document.createElement('button');del.className='btn';del.textContent='Xóa';
+        edit.addEventListener('click', ()=> openModalForEdit(ev))
+        del.addEventListener('click', ()=> {if(confirm('Xóa sự kiện này?')){state.events = state.events.filter(x=>x.id!==ev.id);save();renderCalendar();renderEventsList()}})
+        controls.appendChild(edit);controls.appendChild(del)
+        it.appendChild(controls)
+
+        eventsList.appendChild(it)
+      })
+    }
+
+    // Modal operations
+    let editingId = null
+    function openModalForDate(d){
+      editingId = null
+      modalTitle.textContent = 'Thêm sự kiện'
+      evTitle.value = ''
+      evDesc.value = ''
+      evDate.value = d.toISOString().slice(0,10)
+      evTime.value = ''
+      showModal()
+    }
+    function openModalForEdit(ev){
+      editingId = ev.id
+      modalTitle.textContent = 'Sửa sự kiện'
+      evTitle.value = ev.title
+      evDesc.value = ev.desc || ''
+      evDate.value = ev.dateKey
+      evTime.value = ev.time || ''
+      showModal()
+    }
+
+    function showModal(){modal.style.display='flex'}
+    function hideModal(){modal.style.display='none'}
+
+    saveBtn.addEventListener('click', ()=>{
+      const title = evTitle.value.trim() || '(Không có tiêu đề)'
+      const desc = evDesc.value.trim()
+      const dateKey = evDate.value
+      if(!dateKey){alert('Chọn ngày nhé');return}
+      const time = evTime.value
+      if(editingId){
+        const ev = state.events.find(x=>x.id===editingId)
+        if(ev){ev.title=title;ev.desc=desc;ev.dateKey=dateKey;ev.time=time}
+      }else{
+        const id = Date.now().toString(36)+Math.random().toString(36).slice(2,7)
+        state.events.push({id,title,desc,dateKey,time,color:randomColor()})
+      }
+      save();renderCalendar();renderEventsList();hideModal();
+    })
+    cancelBtn.addEventListener('click', hideModal)
+    document.getElementById('modal').addEventListener('click', (e)=>{if(e.target===modal) hideModal()})
+
+    // Controls
+    prev.addEventListener('click', ()=>{state.viewDate = new Date(state.viewDate.getFullYear(), state.viewDate.getMonth()-1,1);renderCalendar()})
+    next.addEventListener('click', ()=>{state.viewDate = new Date(state.viewDate.getFullYear(), state.viewDate.getMonth()+1,1);renderCalendar()})
+    gotoToday.addEventListener('click', ()=>{state.viewDate = new Date();renderCalendar()})
+    addEventBtn.addEventListener('click', ()=>{openModalForDate(new Date())})
+
+    // Utils
+    function randomColor(){
+      const palette = ['#7C5CFF','#3DD3C1','#FF6B6B','#FFD166','#5BC0EB','#9B5DE5']
+      return palette[Math.floor(Math.random()*palette.length)]
+    }
+
+    // migrate old date format if needed
+    function normalizeEvents(){
+      state.events = (state.events||[]).map(e=>{
+        if(!e.dateKey){ // older format: store date as ISO
+          const d = new Date(e.date)
+          e.dateKey = d.toISOString().slice(0,10)
+        }
+        return e
+      })
+    }
+
+    // init
+    load();normalizeEvents();renderWeekdays();renderCalendar();renderEventsList();
+
+    // expose to window for quick debugging
+    window.t2 = {state, save, load, renderCalendar}
+  })();
+  </script>
+</body>
+</html>
