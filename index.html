@@ -384,6 +384,26 @@
         transform: none;
       }
     }
+    /* PWA install button + iOS hint */
+    #installBtn{display:none}
+    .ios-hint{
+      position:fixed;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:20px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+      padding:12px 14px;
+      border-radius:12px;
+      box-shadow:var(--shadow);
+      display:none;
+      align-items:center;
+      gap:8px;
+      z-index:9999;
+      color:inherit;
+      max-width:90vw;
+    }
+    .ios-hint .muted{color:var(--muted);font-size:13px}
+    .ios-hint .btn{padding:6px 10px}
   </style>
 </head>
 <body>
@@ -393,8 +413,8 @@
         <div class="title">
           <div class="brand"><img src="favicon.ico" alt="Text2 Logo" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;"></div>
           <div>
-            <h1>Text2 — Premium Calendar</h1>
-            <p class="lead">Clean, elegant, easy to use — for the Text2 ecosystem</p>
+            <h1>Text2 — Calendar</h1>
+            <p class="lead">schedule management and best</p>
           </div>
         </div>
         <div class="controls">
@@ -406,6 +426,7 @@
             </div>
             <button class="btn" id="next">▶</button>
           </div>
+          <button class="btn" id="installBtn">Install App</button>
           <button class="btn primary" id="addEventBtn">+ Add Event</button>
         </div>
       </header>
@@ -677,6 +698,75 @@
     // expose to window for quick debugging
     window.t2 = {state, save, load, renderCalendar}
   })();
+  </script>
+  <!-- PWA install handler + iOS hint -->
+  <div class="ios-hint" id="iosHint" role="dialog" aria-hidden="true">
+    <div style="display:flex;gap:8px;align-items:center">
+      <strong>Install</strong>
+      <div class="muted">Add this app to your Home Screen for quick access.</div>
+    </div>
+    <div class="right">
+      <button class="btn" id="iosHintClose">Close</button>
+    </div>
+  </div>
+  <script>
+    (function(){
+      let deferredPrompt = null;
+      const installBtn = document.getElementById('installBtn');
+      const iosHint = document.getElementById('iosHint');
+      const iosHintClose = document.getElementById('iosHintClose');
+
+      function isIos(){
+        return /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+      }
+      function isInStandaloneMode(){
+        return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+      }
+
+      // Show iOS hint if on iOS and not already installed
+      if(isIos() && !isInStandaloneMode()){
+        iosHint.style.display = 'flex';
+        iosHint.setAttribute('aria-hidden','false');
+      }
+      iosHintClose.addEventListener('click', ()=>{iosHint.style.display='none';iosHint.setAttribute('aria-hidden','true')});
+
+      // Listen for beforeinstallprompt
+      window.addEventListener('beforeinstallprompt', (e)=>{
+        e.preventDefault();
+        deferredPrompt = e;
+        // show install button
+        installBtn.style.display = 'inline-flex';
+        installBtn.addEventListener('click', async function onInstallClick(){
+          installBtn.disabled = true;
+          if(!deferredPrompt) return;
+          deferredPrompt.prompt();
+          const choice = await deferredPrompt.userChoice;
+          if(choice.outcome === 'accepted'){
+            console.log('User accepted the PWA install');
+            installBtn.style.display = 'none';
+            iosHint.style.display = 'none';
+          } else {
+            console.log('User dismissed the PWA install');
+            installBtn.disabled = false;
+          }
+          deferredPrompt = null;
+          installBtn.removeEventListener('click', onInstallClick);
+        });
+      });
+
+      // Hide install button once installed
+      window.addEventListener('appinstalled', ()=>{
+        console.log('PWA was installed');
+        installBtn.style.display = 'none';
+        iosHint.style.display = 'none';
+      });
+
+      // If already installed (display-mode), hide both
+      if(isInStandaloneMode()){
+        installBtn.style.display = 'none';
+        iosHint.style.display = 'none';
+      }
+    })();
   </script>
   <!-- Service Worker registration for PWA (will work once sw.js is present) -->
   <script>
