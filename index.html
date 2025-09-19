@@ -1,18 +1,22 @@
 <!doctype html>
-<html lang="vi">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Text2 — Lịch xịn</title>
+  <title>Text2 — Calendar</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
   <style>
     /* Reset + base */
     :root{
-      --bg:#0f1724; --card:#0b1220; --muted:#98a8bf; --accent1:#7c5cff; --accent2:#3dd3c1; --glass: rgba(255,255,255,0.04);
-      --radius:14px; --shadow: 0 8px 30px rgba(2,6,23,0.6);
+      --bg:#1A1A1A; --card:#1E1E1E; --muted:#B0B0B0; --accent1:#1E90FF; --accent2:#1E90FF; --glass: rgba(255,255,255,0.06);
+      --radius:14px; --shadow: 0 8px 30px rgba(0,0,0,0.4);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     }
     *{box-sizing:border-box}
-    html,body{height:100%;margin:0;background:linear-gradient(180deg,#071025 0%, #071129 55%, #081226 100%);color:#e6eef8}
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,#121212 0%, #1A1A1A 55%, #1A1A1A 100%);color:#FFFFFF}
     a{color:inherit}
 
     /* App frame */
@@ -75,22 +79,22 @@
     <div>
       <header>
         <div class="title">
-          <div class="brand"><span>t2</span></div>
+          <div class="brand"><img src="favicon.ico" alt="Text2 Logo" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;"></div>
           <div>
-            <h1>Text2 — Lịch xịn</h1>
-            <p class="lead">Gọn, sang, dễ dùng — cho hệ sinh thái Text2</p>
+            <h1>Text2 — Premium Calendar</h1>
+            <p class="lead">Clean, elegant, easy to use — for the Text2 ecosystem</p>
           </div>
         </div>
         <div class="controls">
           <div class="nav">
             <button class="btn" id="prev">◀</button>
             <div style="padding:10px 14px;border-radius:10px;background:rgba(255,255,255,0.02);display:flex;align-items:center;gap:10px">
-              <strong id="curMonth">Tháng</strong>
+              <strong id="curMonth">Month</strong>
               <span class="muted" id="curYear">2025</span>
             </div>
             <button class="btn" id="next">▶</button>
           </div>
-          <button class="btn primary" id="addEventBtn">+ Thêm sự kiện</button>
+          <button class="btn primary" id="addEventBtn">+ Add Event</button>
         </div>
       </header>
 
@@ -105,7 +109,7 @@
     <aside>
       <div class="card mini">
         <div>
-          <div class="muted">Hôm nay</div>
+          <div class="muted">Today</div>
           <div style="font-weight:700" id="todayPretty">—</div>
         </div>
         <div class="flex">
@@ -115,7 +119,7 @@
 
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-          <div style="font-weight:700">Sự kiện sắp tới</div>
+          <div style="font-weight:700">Upcoming Events</div>
           <div class="muted" id="evtCount">0</div>
         </div>
         <div class="events-list" id="eventsList">
@@ -123,34 +127,34 @@
       </div>
 
       <div class="card">
-        <div style="font-weight:700;margin-bottom:8px">Mẹo dùng</div>
-        <div class="muted">• Nhấn vào ô ngày để xem/ thêm sự kiện. <br>• Dữ liệu được lưu vào trình duyệt (localStorage).<br>• Muốn xuất dữ liệu? Mình sẽ thêm export/import nếu bạn muốn 😎</div>
+        <div style="font-weight:700;margin-bottom:8px">Usage Tips</div>
+        <div class="muted">• Click on a day cell to view/add events. <br>• Data is saved to your browser (localStorage).<br>• Want to export data? I'll add export/import if you'd like 😎</div>
       </div>
     </aside>
 
     <!-- Modal -->
     <div class="modal-backdrop" id="modal">
       <div class="modal">
-        <h3 id="modalTitle">Thêm sự kiện</h3>
+        <h3 id="modalTitle">Add Event</h3>
         <div class="field">
-          <label class="muted">Tiêu đề</label>
-          <input id="evTitle" placeholder="Ví dụ: Họp đội" />
+          <label class="muted">Title</label>
+          <input id="evTitle" placeholder="e.g., Team Meeting" />
         </div>
         <div class="field">
-          <label class="muted">Mô tả</label>
-          <textarea id="evDesc" rows="3" placeholder="Chi tiết ngắn"></textarea>
+          <label class="muted">Description</label>
+          <textarea id="evDesc" rows="3" placeholder="Brief details"></textarea>
         </div>
         <div class="field">
-          <label class="muted">Ngày</label>
+          <label class="muted">Date</label>
           <input id="evDate" type="date" />
         </div>
         <div class="field">
-          <label class="muted">Giờ (tùy chọn)</label>
+          <label class="muted">Time (optional)</label>
           <input id="evTime" type="time" />
         </div>
         <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:6px">
-          <button class="btn" id="cancelBtn">Hủy</button>
-          <button class="btn primary" id="saveBtn">Lưu</button>
+          <button class="btn" id="cancelBtn">Cancel</button>
+          <button class="btn primary" id="saveBtn">Save</button>
         </div>
       </div>
     </div>
@@ -158,9 +162,9 @@
   </div>
 
   <script>
-  // Tiny calendar app — single-file. Lưu trữ bằng localStorage.
+  // Tiny calendar app — single-file. Storage using localStorage.
   (function(){
-    const localeVN = {weekdays: ['CN','T2','T3','T4','T5','T6','T7'], months: ['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12']}
+    const localeEN = {weekdays: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], months: ['January','February','March','April','May','June','July','August','September','October','November','December']}
     const state = {viewDate: new Date(), events: []}
     const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
 
@@ -195,14 +199,14 @@
 
     // Render weekdays
     function renderWeekdays(){weekdaysEl.innerHTML = '';
-      for(let i=0;i<7;i++){const el = document.createElement('div');el.className='weekday';el.textContent = localeVN.weekdays[i];weekdaysEl.appendChild(el)}
+      for(let i=0;i<7;i++){const el = document.createElement('div');el.className='weekday';el.textContent = localeEN.weekdays[i];weekdaysEl.appendChild(el)}
     }
 
     // Helpers
     function startOfMonth(d){return new Date(d.getFullYear(), d.getMonth(),1)}
     function endOfMonth(d){return new Date(d.getFullYear(), d.getMonth()+1,0)}
     function sameDay(a,b){return a.getFullYear()==b.getFullYear()&&a.getMonth()==b.getMonth()&&a.getDate()==b.getDate()}
-    function formatPretty(d){return d.toLocaleDateString('vi-VN',{weekday:'short',day:'numeric',month:'short'})}
+    function formatPretty(d){return d.toLocaleDateString('en-US',{weekday:'short',day:'numeric',month:'short'})}
 
     // Render calendar grid
     function renderCalendar(){
@@ -213,7 +217,7 @@
       const startWeek = start.getDay() // 0..6 (Sun..Sat)
       const daysInMonth = end.getDate()
 
-      curMonth.textContent = localeVN.months[view.getMonth()]
+      curMonth.textContent = localeEN.months[view.getMonth()]
       curYear.textContent = view.getFullYear()
       todayPretty.textContent = formatPretty(new Date())
 
@@ -268,7 +272,7 @@
       eventsList.innerHTML=''
       const sorted = state.events.slice().sort((a,b)=> a.dateKey.localeCompare(b.dateKey) || (a.time||'').localeCompare(b.time||''))
       evtCount.textContent = sorted.length
-      if(sorted.length===0){eventsList.innerHTML = '<div class="muted">Không có sự kiện nào. Thêm thử nhé!</div>';return}
+      if(sorted.length===0){eventsList.innerHTML = '<div class="muted">No events yet. Try adding one!</div>';return}
 
       sorted.forEach(ev=>{
         const it = document.createElement('div');it.className='ev-item'
@@ -279,10 +283,10 @@
         it.appendChild(body)
 
         const controls = document.createElement('div');controls.className='right'
-        const edit = document.createElement('button');edit.className='btn';edit.textContent='Sửa';
-        const del = document.createElement('button');del.className='btn';del.textContent='Xóa';
+        const edit = document.createElement('button');edit.className='btn';edit.textContent='Edit';
+        const del = document.createElement('button');del.className='btn';del.textContent='Delete';
         edit.addEventListener('click', ()=> openModalForEdit(ev))
-        del.addEventListener('click', ()=> {if(confirm('Xóa sự kiện này?')){state.events = state.events.filter(x=>x.id!==ev.id);save();renderCalendar();renderEventsList()}})
+        del.addEventListener('click', ()=> {if(confirm('Delete this event?')){state.events = state.events.filter(x=>x.id!==ev.id);save();renderCalendar();renderEventsList()}})
         controls.appendChild(edit);controls.appendChild(del)
         it.appendChild(controls)
 
@@ -294,7 +298,7 @@
     let editingId = null
     function openModalForDate(d){
       editingId = null
-      modalTitle.textContent = 'Thêm sự kiện'
+      modalTitle.textContent = 'Add Event'
       evTitle.value = ''
       evDesc.value = ''
       evDate.value = d.toISOString().slice(0,10)
@@ -303,7 +307,7 @@
     }
     function openModalForEdit(ev){
       editingId = ev.id
-      modalTitle.textContent = 'Sửa sự kiện'
+      modalTitle.textContent = 'Edit Event'
       evTitle.value = ev.title
       evDesc.value = ev.desc || ''
       evDate.value = ev.dateKey
@@ -315,10 +319,10 @@
     function hideModal(){modal.style.display='none'}
 
     saveBtn.addEventListener('click', ()=>{
-      const title = evTitle.value.trim() || '(Không có tiêu đề)'
+      const title = evTitle.value.trim() || '(No title)'
       const desc = evDesc.value.trim()
       const dateKey = evDate.value
-      if(!dateKey){alert('Chọn ngày nhé');return}
+      if(!dateKey){alert('Please select a date');return}
       const time = evTime.value
       if(editingId){
         const ev = state.events.find(x=>x.id===editingId)
