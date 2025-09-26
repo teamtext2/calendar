@@ -199,17 +199,18 @@
   <div id="mobileModal" class="mobile-modal" aria-hidden="true">
     <div class="mobile-sheet">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <div style="font-weight:700">Thêm</div>
+        <div id="mobileTitle" style="font-weight:700">Thêm</div>
         <button id="mobileClose" class="icon-btn" aria-label="Đóng">
           <svg viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="white" stroke-opacity="0.95" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </div>
       <!-- mobile uses same form fields but shown here -->
       <form id="mobileForm">
-        <div class="field"><input id="m_name" type="text" placeholder="Tên sự kiện" aria-label="Tên sự kiện" required /></div>
-        <div class="field"><input id="m_date" type="date" aria-label="Ngày sự kiện" required /></div>
-        <div class="field"><input id="m_label" type="text" placeholder="Nhãn" aria-label="Nhãn sự kiện (tùy chọn)" /></div>
-        <div class="field"><textarea id="m_desc" placeholder="Ghi chú (tùy chọn)" aria-label="Mô tả sự kiện"></textarea></div>
+        <div class="field"><label style="width:100%;font-size:13px;margin-bottom:6px">Tiêu đề</label><input id="m_name" type="text" placeholder="Tên sự kiện" aria-label="Tên sự kiện" required /></div>
+        <div class="field"><label style="width:100%;font-size:13px;margin-bottom:6px">Ngày (ngày/tháng/năm)</label><input id="m_date" type="date" aria-label="Ngày sự kiện" required /></div>
+        <div class="field"><label style="width:100%;font-size:13px;margin-bottom:6px">Nhãn (tùy chọn)</label><input id="m_label" type="text" placeholder="Nhãn" aria-label="Nhãn sự kiện (tùy chọn)" /></div>
+        <div class="field"><label style="width:100%;font-size:13px;margin-bottom:6px">Mô tả (tùy chọn)</label><textarea id="m_desc" placeholder="Ghi chú (tùy chọn)" aria-label="Mô tả sự kiện"></textarea></div>
+        <div class="field"><label style="width:100%;font-size:13px;margin-bottom:6px">Năm bắt đầu (tùy chọn)</label><input id="m_startYear" type="number" min="1900" max="3000" placeholder="Ví dụ: 2025" aria-label="Năm bắt đầu (tùy chọn)" /></div>
         <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
           <button id="m_cancel" type="button" class="icon-btn" aria-label="Hủy">
             <svg viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="white" stroke-opacity="0.95" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -224,15 +225,19 @@
 
   <script>
     // helpers
-    const STORAGE_KEY = 'vibe_countdown_events_v1';
     const listEl = document.getElementById('list');
     const form = document.getElementById('form');
     const mobileModal = document.getElementById('mobileModal');
     const STORAGE_INFO = document.getElementById('localInfo');
+    const mobileTitle = document.getElementById('mobileTitle');
+
+    // in-memory events (not persisted)
+    let eventsInMemory = [];
+    let currentEditingId = null; // null when creating
 
     function uid(){return Math.random().toString(36).slice(2,9)}
-    function loadEvents(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')}catch(e){console.error(e);return []}}
-    function saveEvents(events){localStorage.setItem(STORAGE_KEY, JSON.stringify(events));}
+    function loadEvents(){ return eventsInMemory.slice(); }
+    function saveEvents(events){ eventsInMemory = events.slice(); }
 
     function daysBetween(dateA, dateB){const msPerDay = 24*60*60*1000;const utcA = Date.UTC(dateA.getFullYear(), dateA.getMonth(), dateA.getDate());const utcB = Date.UTC(dateB.getFullYear(), dateB.getMonth(), dateB.getDate());return Math.floor((utcB - utcA)/msPerDay);}
     function computeLabel(evDate){const today=new Date();const diff=daysBetween(today, evDate);if(diff>0)return{txt:`+${diff}`, passed:false, num:diff};if(diff===0)return{txt:`0`, passed:false, num:0};return{txt:`-${Math.abs(diff)}`, passed:true, num:Math.abs(diff)} }
@@ -252,7 +257,9 @@
           const badge=document.createElement('div');badge.className='badge';badge.textContent=(ev.timeLabel||ev.name||'?')[0].toUpperCase();
           const meta=document.createElement('div');meta.className='meta';
           const ename=document.createElement('div');ename.className='ename';ename.textContent=ev.name;
-          const edesc=document.createElement('div');edesc.className='edesc';edesc.textContent=ev.timeLabel || '';
+          const edesc=document.createElement('div');edesc.className='edesc';
+          edesc.textContent = ev.timeLabel || '';
+          if(ev.startYear){ edesc.textContent += (edesc.textContent ? ' · ' : '') + 'Năm bắt đầu: ' + ev.startYear; }
           meta.appendChild(ename);meta.appendChild(edesc);
           left.appendChild(badge);left.appendChild(meta);
 
@@ -263,10 +270,15 @@
 
           const controls=document.createElement('div');controls.className='controls';
 
+          // edit icon-only button
+          const edit=document.createElement('button');edit.className='icon-btn';edit.setAttribute('aria-label','Sửa');edit.innerHTML='<svg viewBox="0 0 24 24" fill="none"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" stroke="white" stroke-opacity="0.9" stroke-width="0"/></svg>';
+          edit.addEventListener('click', ()=>{ openMobileModalForEdit(ev.id); });
+
           // delete icon-only button
           const del=document.createElement('button');del.className='icon-btn';del.setAttribute('aria-label','Xóa');del.innerHTML='<svg viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6" stroke="white" stroke-opacity="0.95" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
           del.addEventListener('click', ()=>{ if(confirm('Xóa sự kiện "'+ev.name+'" ?')){ const rest = loadEvents().filter(x=>x.id!==ev.id); saveEvents(rest); render(); } });
 
+          controls.appendChild(edit);
           controls.appendChild(del);
 
           right.appendChild(label);right.appendChild(when);right.appendChild(controls);
@@ -274,45 +286,74 @@
           listEl.appendChild(card);
         })
       }
-      STORAGE_INFO.textContent = `${loadEvents().length} sự kiện · Lưu cục bộ`;
+      STORAGE_INFO.textContent = `${loadEvents().length} sự kiện · Không lưu (chỉ phiên hiện tại)`;
     }
 
-    // form logic (desktop)
-    let formVisible = false;
+    // show mobile modal for create or edit
+    function openMobileModalForCreate(){
+      currentEditingId = null;
+      mobileTitle.textContent = 'Thêm';
+      document.getElementById('m_name').value = '';
+      document.getElementById('m_date').value = '';
+      document.getElementById('m_label').value = '';
+      document.getElementById('m_desc').value = '';
+      document.getElementById('m_startYear').value = '';
+      mobileModal.classList.add('open'); mobileModal.setAttribute('aria-hidden','false'); document.getElementById('m_name').focus();
+    }
+
+    function openMobileModalForEdit(id){
+      const ev = loadEvents().find(x=>x.id===id); if(!ev) return;
+      currentEditingId = id;
+      mobileTitle.textContent = 'Sửa';
+      document.getElementById('m_name').value = ev.name || '';
+      document.getElementById('m_date').value = new Date(ev.date).toISOString().slice(0,10);
+      document.getElementById('m_label').value = ev.timeLabel || '';
+      document.getElementById('m_desc').value = ev.desc || '';
+      document.getElementById('m_startYear').value = ev.startYear || '';
+      mobileModal.classList.add('open'); mobileModal.setAttribute('aria-hidden','false'); document.getElementById('m_name').focus();
+    }
+
+    // wire buttons
+    let formVisible = false; // desktop side form not used for add
     const toggleAddBtn = document.getElementById('toggleAdd');
     const fab = document.getElementById('fab');
     const cancelBtn = document.getElementById('cancel');
 
-    function showForm(show){
-      formVisible = !!show;
-      if(formVisible){ form.classList.add('open'); form.setAttribute('aria-hidden','false'); document.getElementById('name').focus(); }
-      else{ form.classList.remove('open'); form.setAttribute('aria-hidden','true'); form.reset(); }
-    }
+    // Make desktop Add button open the popup modal instead of side form
+    toggleAddBtn.addEventListener('click', ()=>{ openMobileModalForCreate(); });
+    fab.addEventListener('click', ()=>{ openMobileModalForCreate(); });
+    cancelBtn.addEventListener('click', ()=>{ /* keep side form behavior: just hide */ form.classList.remove('open'); form.setAttribute('aria-hidden','true'); form.reset(); });
 
-    toggleAddBtn.addEventListener('click', ()=>{ showForm(!formVisible); });
-    fab.addEventListener('click', ()=>{ mobileModal.classList.add('open'); mobileModal.setAttribute('aria-hidden','false'); document.getElementById('m_name').focus(); });
-    cancelBtn.addEventListener('click', ()=>{ showForm(false); });
-
-    form.addEventListener('submit', (e)=>{
-      e.preventDefault();
-      const name = document.getElementById('name').value.trim();
-      const dateVal = document.getElementById('date').value;
-      if(!name || !dateVal){ alert('Vui lòng nhập tên và ngày.'); return }
-      const desc = document.getElementById('desc').value.trim();
-      const timeLabel = document.getElementById('timeLabel').value.trim();
-      const eventDate = new Date(dateVal + 'T00:00');
-      const events = loadEvents();
-      events.push({id:uid(), name, date:eventDate.toISOString(), desc, timeLabel});
-      saveEvents(events); showForm(false); render();
-    });
+    // disable desktop form submission to avoid confusion; prefer modal
+    form.addEventListener('submit', (e)=>{ e.preventDefault(); openMobileModalForCreate(); });
 
     // mobile modal handlers
-    document.getElementById('mobileClose').addEventListener('click', ()=>{ mobileModal.classList.remove('open'); mobileModal.setAttribute('aria-hidden','true'); document.getElementById('mobileForm').reset(); });
-    document.getElementById('m_cancel').addEventListener('click', ()=>{ mobileModal.classList.remove('open'); mobileModal.setAttribute('aria-hidden','true'); document.getElementById('mobileForm').reset(); });
-    document.getElementById('mobileForm').addEventListener('submit', (e)=>{ e.preventDefault(); const name=document.getElementById('m_name').value.trim(); const dateVal=document.getElementById('m_date').value; if(!name||!dateVal){ alert('Vui lòng nhập tên và ngày.'); return } const label=document.getElementById('m_label').value.trim(); const desc=document.getElementById('m_desc').value.trim(); const eventDate=new Date(dateVal+'T00:00'); const events = loadEvents(); events.push({id:uid(), name, date:eventDate.toISOString(), desc, timeLabel:label}); saveEvents(events); mobileModal.classList.remove('open'); mobileModal.setAttribute('aria-hidden','true'); document.getElementById('mobileForm').reset(); render(); });
+    document.getElementById('mobileClose').addEventListener('click', ()=>{ mobileModal.classList.remove('open'); mobileModal.setAttribute('aria-hidden','true'); document.getElementById('mobileForm').reset(); currentEditingId = null; mobileTitle.textContent='Thêm'; });
+    document.getElementById('m_cancel').addEventListener('click', ()=>{ mobileModal.classList.remove('open'); mobileModal.setAttribute('aria-hidden','true'); document.getElementById('mobileForm').reset(); currentEditingId = null; mobileTitle.textContent='Thêm'; });
+    document.getElementById('mobileForm').addEventListener('submit', (e)=>{ 
+      e.preventDefault(); 
+      const name=document.getElementById('m_name').value.trim(); 
+      const dateVal=document.getElementById('m_date').value; 
+      if(!name||!dateVal){ alert('Vui lòng nhập tên và ngày.'); return } 
+      const label=document.getElementById('m_label').value.trim(); 
+      const desc=document.getElementById('m_desc').value.trim(); 
+      const startYear = document.getElementById('m_startYear').value.trim();
+      const eventDate=new Date(dateVal+'T00:00'); 
+      const events = loadEvents(); 
+      if(currentEditingId){
+        // update
+        const idx = events.findIndex(x=>x.id===currentEditingId);
+        if(idx>-1){ events[idx] = { ...events[idx], name, date:eventDate.toISOString(), desc, timeLabel:label, startYear: startYear || undefined }; saveEvents(events); }
+      }else{
+        // create
+        events.push({id:uid(), name, date:eventDate.toISOString(), desc, timeLabel:label, startYear: startYear || undefined});
+        saveEvents(events);
+      }
+      mobileModal.classList.remove('open'); mobileModal.setAttribute('aria-hidden','true'); document.getElementById('mobileForm').reset(); currentEditingId = null; mobileTitle.textContent='Thêm'; render(); 
+    });
 
-    // clear all
-    document.getElementById('clearAll').addEventListener('click', ()=>{ if(confirm('Xóa tất cả sự kiện?')){ localStorage.removeItem(STORAGE_KEY); render(); } });
+    // clear all (in-memory)
+    document.getElementById('clearAll').addEventListener('click', ()=>{ if(confirm('Xóa tất cả sự kiện?')){ eventsInMemory = []; render(); } });
 
     // auto refresh labels every minute
     setInterval(render, 60*1000);
