@@ -2,25 +2,29 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
   <title>Text2 — Calendar</title>
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="manifest" href="/site.webmanifest">
-  <meta name="theme-color" content="#1A1A1A">
+  <meta name="theme-color" content="#F5F5F5">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <style>
+    /* Mobile-first interaction improvements */
+    html { -webkit-tap-highlight-color: rgba(0,0,0,0); }
+    body { touch-action: manipulation; }
+    button, .btn { -webkit-touch-callout: none; user-select: none; }
     /* Reset + base */
     :root{
-      --bg:#1A1A1A; --card:#1E1E1E; --muted:#B0B0B0; --accent1:#1E90FF; --accent2:#1E90FF; --glass: rgba(255,255,255,0.06);
-      --radius:14px; --shadow: 0 8px 30px rgba(0,0,0,0.4);
+      --bg:#FFFFFF; --card:#FFFFFF; --muted:#666666; --accent1:#1E90FF; --accent2:#1E90FF; --glass: rgba(0,0,0,0.03);
+      --radius:14px; --shadow: 0 4px 20px rgba(0,0,0,0.08);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     }
     *{box-sizing:border-box}
-    html,body{height:100%;margin:0;background:linear-gradient(180deg,#121212 0%, #1A1A1A 55%, #1A1A1A 100%);color:#FFFFFF}
+    html,body{height:100%;margin:0;background:#FFFFFF;color:#1A1A1A}
     a{color:inherit}
 
     /* App frame - Responsive container */
@@ -29,8 +33,9 @@
       margin:clamp(8px, 3vw, 28px) auto;
       padding:clamp(12px, 3vw, 28px);
       border-radius:clamp(12px, 2vw, 20px);
-      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      box-shadow:var(--shadow);
+      background:#FFFFFF;
+      box-shadow:0 2px 16px rgba(0,0,0,0.06);
+      border:1px solid rgba(0,0,0,0.06);
       display:grid;
       grid-template-columns:1fr min(320px, 30vw);
       gap:clamp(12px, 2vw, 22px);
@@ -64,17 +69,20 @@
       background:var(--glass);
       padding:clamp(8px, 2vw, 10px) clamp(10px, 2.5vw, 12px);
       border-radius:clamp(8px, 2vw, 10px);
-      border:1px solid rgba(255,255,255,0.02);
+      border:1px solid rgba(0,0,0,0.06);
       cursor:pointer;
       font-size:clamp(12px, 2.5vw, 14px);
       white-space:nowrap;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform .12s ease;
     }
+    .btn:active { transform: translateY(1px); }
     .btn.primary{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#041223;font-weight:600;border:none}
     .nav{display:flex;gap:clamp(4px, 1vw, 6px);align-items:center}
 
     /* Calendar - Responsive */
     .calendar{
-      background:rgba(255,255,255,0.02);
+      background:rgba(0,0,0,0.02);
       padding:clamp(12px, 3vw, 18px);
       border-radius:clamp(12px, 2vw, 16px);
     }
@@ -83,13 +91,15 @@
     .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:clamp(4px, 1.5vw, 8px)}
     .day{
       min-height:clamp(60px, 12vw, 86px);
-      background:transparent;
+      background:rgba(173, 216, 230, 0.15);
       border-radius:clamp(8px, 2vw, 12px);
       padding:clamp(6px, 1.5vw, 8px);
       position:relative;
       transition:transform .15s;
+      border:1px solid rgba(0,0,0,0.08);
     }
     .day:hover{transform:translateY(-2px)}
+    .day:active{transform:translateY(0)}
     .day .num{
       position:absolute;
       top:clamp(6px, 1.5vw, 8px);
@@ -111,7 +121,7 @@
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      border:1px solid rgba(255,255,255,0.03);
+      border:1px solid rgba(0,0,0,0.06);
     }
     .dot{
       display:inline-block;
@@ -125,7 +135,7 @@
     /* Sidebar - Responsive */
     aside{display:flex;flex-direction:column;gap:clamp(8px, 2vw, 12px)}
     .card{
-      background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
+      background:linear-gradient(180deg, rgba(0,0,0,0.01), rgba(0,0,0,0.02));
       padding:clamp(10px, 2.5vw, 12px);
       border-radius:clamp(10px, 2vw, 12px);
     }
@@ -139,7 +149,7 @@
       padding:clamp(8px, 2vw, 10px);
       border-radius:clamp(8px, 2vw, 10px);
       margin-bottom:clamp(6px, 1.5vw, 8px);
-      background:rgba(255,255,255,0.02);
+      background:rgba(0,0,0,0.02);
       display:flex;
       align-items:center;
       gap:clamp(8px, 2vw, 10px);
@@ -151,7 +161,7 @@
     .modal-backdrop{
       position:fixed;
       inset:0;
-      background:linear-gradient(0deg, rgba(2,6,23,0.6), rgba(2,6,23,0.6));
+      background:linear-gradient(0deg, rgba(0,0,0,0.6), rgba(0,0,0,0.6));
       display:none;
       align-items:center;
       justify-content:center;
@@ -160,22 +170,24 @@
     .modal{
       width:min(420px, 90vw);
       max-width:100%;
-      background:#071428;
+      background:#FFFFFF;
       border-radius:clamp(10px, 2vw, 12px);
       padding:clamp(12px, 3vw, 16px);
-      box-shadow:0 10px 40px rgba(2,6,23,0.7);
+      box-shadow:0 10px 40px rgba(0,0,0,0.12);
       max-height:90vh;
       overflow-y:auto;
+      /* Prevent iOS input zoom by ensuring >=16px */
+      font-size:16px;
     }
     .field{margin-bottom:clamp(6px, 1.5vw, 8px)}
     input,textarea,select{
       width:100%;
       padding:clamp(8px, 2vw, 10px);
       border-radius:clamp(6px, 1.5vw, 8px);
-      border:1px solid rgba(255,255,255,0.04);
+      border:1px solid rgba(0,0,0,0.08);
       background:transparent;
       color:inherit;
-      font-size:clamp(12px, 2.5vw, 14px);
+      font-size:16px; /* iOS zoom prevention */
     }
 
     /* Tiny helpers */
@@ -232,7 +244,7 @@
     /* Mobile phones */
     @media (max-width: 480px) {
       .app {
-        margin: 4px auto;
+        margin: max(4px, env(safe-area-inset-top)) auto max(4px, env(safe-area-inset-bottom));
         padding: 12px;
         border-radius: 12px;
       }
@@ -275,6 +287,9 @@
       .calendar {
         padding: 10px;
       }
+      /* Tone down hover effects on touch */
+      .day:hover { transform:none; }
+      .btn:hover { transform:none; }
       .grid {
         gap: 3px;
       }
@@ -363,16 +378,24 @@
     }
 
     /* Dark mode support for system preference */
-    @media (prefers-color-scheme: light) {
+    @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #F5F5F5;
-        --card: #FFFFFF;
-        --muted: #666666;
+        --bg:#1A1A1A; --card:#1E1E1E; --muted:#B0B0B0; --glass: rgba(255,255,255,0.06);
+        --shadow: 0 8px 30px rgba(0,0,0,0.4);
       }
       html, body {
-        background: linear-gradient(180deg, #F8F9FA 0%, #F5F5F5 55%, #F5F5F5 100%);
-        color: #1A1A1A;
+        background: linear-gradient(180deg,#121212 0%, #1A1A1A 55%, #1A1A1A 100%);
+        color: #FFFFFF;
       }
+      .app { background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); }
+      .calendar { background:rgba(255,255,255,0.02); }
+      .btn { border:1px solid rgba(255,255,255,0.02); }
+      .event-pill { border:1px solid rgba(255,255,255,0.03); }
+      .card { background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02)); }
+      .ev-item { background:rgba(255,255,255,0.02); }
+      .modal-backdrop { background:linear-gradient(0deg, rgba(2,6,23,0.6), rgba(2,6,23,0.6)); }
+      .modal { background:#071428; box-shadow:0 10px 40px rgba(2,6,23,0.7); }
+      input,textarea,select { border:1px solid rgba(255,255,255,0.04); }
     }
 
     /* Reduce motion for accessibility */
@@ -384,26 +407,18 @@
         transform: none;
       }
     }
-    /* PWA install button + iOS hint */
-    #installBtn{display:none}
-    .ios-hint{
-      position:fixed;
-      left:50%;
-      transform:translateX(-50%);
-      bottom:20px;
-      background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
-      padding:12px 14px;
-      border-radius:12px;
-      box-shadow:var(--shadow);
-      display:none;
-      align-items:center;
-      gap:8px;
-      z-index:9999;
-      color:inherit;
-      max-width:90vw;
+    /* Clarity tweaks */
+    .day{border:1px solid rgba(0,0,0,0.08)}
+    .weekday{letter-spacing:0.2px}
+    .day.today{border-color: rgba(61,211,193,0.28)}
+    .ev-item{border:1px solid rgba(0,0,0,0.08)}
+    .events-list::-webkit-scrollbar{width:8px;height:8px}
+    .events-list::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:8px}
+    @media (prefers-color-scheme: dark) {
+      .day{border:1px solid rgba(255,255,255,0.04)}
+      .ev-item{border:1px solid rgba(255,255,255,0.04)}
+      .events-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1)}
     }
-    .ios-hint .muted{color:var(--muted);font-size:13px}
-    .ios-hint .btn{padding:6px 10px}
   </style>
 </head>
 <body>
@@ -426,7 +441,8 @@
             </div>
             <button class="btn" id="next">▶</button>
           </div>
-          <button class="btn" id="installBtn">Install App</button>
+          <input type="file" id="fileInput" accept=".ics,.csv" style="display:none">
+          <button class="btn" id="importBtn">Import file</button>
           <button class="btn primary" id="addEventBtn">+ Add Event</button>
         </div>
       </header>
@@ -459,10 +475,6 @@
         </div>
       </div>
 
-      <div class="card">
-        <div style="font-weight:700;margin-bottom:8px">Usage Tips</div>
-        <div class="muted">• Click on a day cell to view/add events. <br>• Data is saved to your browser (localStorage).<br>• Want to export data? I'll add export/import if you'd like 😎</div>
-      </div>
     </aside>
 
     <!-- Modal -->
@@ -523,6 +535,8 @@
     const prev = document.getElementById('prev')
     const next = document.getElementById('next')
     const gotoToday = document.getElementById('gotoToday')
+    const importBtn = document.getElementById('importBtn')
+    const fileInput = document.getElementById('fileInput')
 
     // Load
     function load(){
@@ -675,6 +689,168 @@
     gotoToday.addEventListener('click', ()=>{state.viewDate = new Date();renderCalendar()})
     addEventBtn.addEventListener('click', ()=>{openModalForDate(new Date())})
 
+    // Import events (ICS/CSV)
+    importBtn.addEventListener('click', ()=> fileInput.click())
+    fileInput.addEventListener('change', async (e)=>{
+      const file = e.target.files && e.target.files[0]
+      if(!file) return
+      try{
+        const text = await file.text()
+        let imported = []
+        if(file.name.toLowerCase().endsWith('.ics')){
+          imported = parseICS(text)
+        }else if(file.name.toLowerCase().endsWith('.csv')){
+          imported = parseCSV(text)
+        }else{
+          alert('Unsupported file. Please choose .ics or .csv')
+          return
+        }
+        if(imported.length===0){
+          alert('No events found to import')
+          return
+        }
+        // append with new ids and colors
+        const withIds = imported.map(ev=>({
+          id: Date.now().toString(36)+Math.random().toString(36).slice(2,7),
+          title: ev.title || '(No title)',
+          desc: ev.desc || '',
+          dateKey: ev.dateKey,
+          time: ev.time || '',
+          color: randomColor()
+        }))
+        state.events = state.events.concat(withIds)
+        save();renderCalendar();renderEventsList()
+        alert(`Imported ${withIds.length} event(s)`) 
+      }catch(err){
+        console.error(err)
+        alert('Failed to import file')
+      }finally{
+        e.target.value = ''
+      }
+    })
+
+    function parseICS(text){
+      // Minimal iCalendar VEVENT parser
+      const lines = text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n')
+      const events = []
+      let cur = null
+      for(const raw of lines){
+        const line = raw.trim()
+        if(line === 'BEGIN:VEVENT') cur = {}
+        else if(line === 'END:VEVENT'){
+          if(cur && cur.DTSTART){
+            const {dateKey, time} = icsDateToParts(cur.DTSTART)
+            events.push({
+              title: cur.SUMMARY || '(No title)',
+              desc: cur.DESCRIPTION || '',
+              dateKey,
+              time
+            })
+          }
+          cur = null
+        }else if(cur){
+          const idx = line.indexOf(':')
+          if(idx>0){
+            const keyRaw = line.slice(0, idx)
+            const value = line.slice(idx+1)
+            const key = keyRaw.split(';')[0] // strip params
+            cur[key] = value
+          }
+        }
+      }
+      return events
+    }
+
+    function icsDateToParts(val){
+      // Supports YYYYMMDD or YYYYMMDDTHHMMSSZ
+      const v = val.replace(/Z$/,'')
+      let dateKey = ''
+      let time = ''
+      if(/^\d{8}$/.test(v)){
+        // all day
+        dateKey = v.slice(0,4)+'-'+v.slice(4,6)+'-'+v.slice(6,8)
+      }else if(/^\d{8}T\d{6}$/.test(v)){
+        dateKey = v.slice(0,4)+'-'+v.slice(4,6)+'-'+v.slice(6,8)
+        const hh = v.slice(9,11)
+        const mm = v.slice(11,13)
+        time = `${hh}:${mm}`
+      }else if(/^\d{8}T\d{4}$/.test(v)){
+        dateKey = v.slice(0,4)+'-'+v.slice(4,6)+'-'+v.slice(6,8)
+        const hh = v.slice(9,11)
+        const mm = v.slice(11,13)
+        time = `${hh}:${mm}`
+      }else{
+        // fallback: try Date parse
+        const d = new Date(val)
+        if(!isNaN(d.getTime())){
+          dateKey = d.toISOString().slice(0,10)
+          time = d.toTimeString().slice(0,5)
+        }
+      }
+      return {dateKey, time}
+    }
+
+    function parseCSV(text){
+      // Simple CSV with headers: title,date,time,desc
+      const lines = text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n').filter(x=>x.trim().length>0)
+      if(lines.length===0) return []
+      const header = lines[0].split(',').map(h=>h.trim().toLowerCase())
+      const idx = {
+        title: header.indexOf('title'),
+        date: header.indexOf('date'),
+        time: header.indexOf('time'),
+        desc: header.indexOf('desc')>=0?header.indexOf('desc'):header.indexOf('description')
+      }
+      const out = []
+      for(let i=1;i<lines.length;i++){
+        const parts = splitCsvLine(lines[i])
+        const title = idx.title>=0 ? (parts[idx.title]||'').trim() : ''
+        const dateRaw = idx.date>=0 ? (parts[idx.date]||'').trim() : ''
+        const time = idx.time>=0 ? (parts[idx.time]||'').trim() : ''
+        const desc = idx.desc>=0 ? (parts[idx.desc]||'').trim() : ''
+        const dateKey = normalizeDateKey(dateRaw)
+        if(dateKey){ out.push({title, desc, dateKey, time}) }
+      }
+      return out
+    }
+
+    function splitCsvLine(line){
+      const res = []
+      let cur = ''
+      let inQ = false
+      for(let i=0;i<line.length;i++){
+        const ch = line[i]
+        if(ch==='"'){
+          if(inQ && line[i+1]==='"'){cur+='"'; i++}
+          else inQ = !inQ
+        }else if(ch===',' && !inQ){
+          res.push(cur); cur=''
+        }else{
+          cur+=ch
+        }
+      }
+      res.push(cur)
+      return res
+    }
+
+    function normalizeDateKey(s){
+      // Accept YYYY-MM-DD or DD/MM/YYYY etc.
+      const t = s.trim()
+      if(/^\d{4}-\d{2}-\d{2}$/.test(t)) return t
+      const m = t.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{2,4})$/)
+      if(m){
+        const d = m[1].padStart(2,'0')
+        const mo = m[2].padStart(2,'0')
+        const y = m[3].length===2 ? ('20'+m[3]) : m[3]
+        // assume DD/MM/YYYY
+        return `${y}-${mo}-${d}`
+      }
+      // try Date()
+      const dt = new Date(t)
+      if(!isNaN(dt.getTime())) return dt.toISOString().slice(0,10)
+      return ''
+    }
+
     // Utils
     function randomColor(){
       const palette = ['#7C5CFF','#3DD3C1','#FF6B6B','#FFD166','#5BC0EB','#9B5DE5']
@@ -699,88 +875,6 @@
     window.t2 = {state, save, load, renderCalendar}
   })();
   </script>
-  <!-- PWA install handler + iOS hint -->
-  <div class="ios-hint" id="iosHint" role="dialog" aria-hidden="true">
-    <div style="display:flex;gap:8px;align-items:center">
-      <strong>Install</strong>
-      <div class="muted">Add this app to your Home Screen for quick access.</div>
-    </div>
-    <div class="right">
-      <button class="btn" id="iosHintClose">Close</button>
-    </div>
-  </div>
-  <script>
-    (function(){
-      let deferredPrompt = null;
-      const installBtn = document.getElementById('installBtn');
-      const iosHint = document.getElementById('iosHint');
-      const iosHintClose = document.getElementById('iosHintClose');
-
-      function isIos(){
-        return /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
-      }
-      function isInStandaloneMode(){
-        return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
-      }
-
-      // Show iOS hint if on iOS and not already installed
-      if(isIos() && !isInStandaloneMode()){
-        iosHint.style.display = 'flex';
-        iosHint.setAttribute('aria-hidden','false');
-      }
-      iosHintClose.addEventListener('click', ()=>{iosHint.style.display='none';iosHint.setAttribute('aria-hidden','true')});
-
-      // Listen for beforeinstallprompt
-      window.addEventListener('beforeinstallprompt', (e)=>{
-        e.preventDefault();
-        deferredPrompt = e;
-        // show install button
-        installBtn.style.display = 'inline-flex';
-        installBtn.addEventListener('click', async function onInstallClick(){
-          installBtn.disabled = true;
-          if(!deferredPrompt) return;
-          deferredPrompt.prompt();
-          const choice = await deferredPrompt.userChoice;
-          if(choice.outcome === 'accepted'){
-            console.log('User accepted the PWA install');
-            installBtn.style.display = 'none';
-            iosHint.style.display = 'none';
-          } else {
-            console.log('User dismissed the PWA install');
-            installBtn.disabled = false;
-          }
-          deferredPrompt = null;
-          installBtn.removeEventListener('click', onInstallClick);
-        });
-      });
-
-      // Hide install button once installed
-      window.addEventListener('appinstalled', ()=>{
-        console.log('PWA was installed');
-        installBtn.style.display = 'none';
-        iosHint.style.display = 'none';
-      });
-
-      // If already installed (display-mode), hide both
-      if(isInStandaloneMode()){
-        installBtn.style.display = 'none';
-        iosHint.style.display = 'none';
-      }
-    })();
-  </script>
-  <!-- Service Worker registration for PWA (will work once sw.js is present) -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function() {
-        navigator.serviceWorker.register('/sw.js').then(function(reg) {
-          console.log('Service worker registered.', reg);
-        }).catch(function(err) {
-          console.warn('Service worker registration failed:', err);
-        });
-      });
-    } else {
-      console.log('Service workers are not supported in this browser.');
-    }
-  </script>
+  
 </body>
 </html>
