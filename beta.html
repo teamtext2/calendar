@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lịch tương tác</title>
+    <style>
+        /* CSS Reset and Variables */
+        :root {
+            --primary-color: #3f51b5; /* A nice blue */
+            --secondary-color: #f5f5f5;
+            --text-color: #333;
+            --button-bg: #e0e0e0;
+            --calendar-bg: #ffffff;
+            --event-dot: #f44336; /* Red for event */
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --border-radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: stretch;
+            min-height: 100vh;
+            background-color: var(--secondary-color);
+            padding: clamp(8px, 2vw, 24px);
+        }
+
+        /* Media elements scale fluidly */
+        img, video, canvas, svg, iframe {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Main Calendar Container */
+        .calendar-app {
+            width: 100%;
+            max-width: 1200px;
+            background-color: var(--calendar-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 1px solid #ddd;
+            min-height: 100%;
+        }
+
+        /* Header Section */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: clamp(10px, 2.5vw, 16px);
+            background-color: var(--secondary-color);
+            border-bottom: 1px solid #eee;
+        }
+
+        .nav-buttons, .date-selector {
+            display: flex;
+            gap: clamp(6px, 2vw, 12px);
+        }
+
+        .nav-buttons button, .date-selector button {
+            background-color: var(--button-bg);
+            border: none;
+            padding: clamp(6px, 1.8vw, 10px) clamp(10px, 2.4vw, 14px);
+            border-radius: 20px;
+            font-size: clamp(14px, 1.8vw, 16px);
+            cursor: pointer;
+            transition: background-color 0.2s, box-shadow 0.2s;
+            font-weight: bold;
+        }
+
+        .nav-buttons button {
+            padding: clamp(6px, 1.6vw, 10px) clamp(10px, 2vw, 12px);
+            font-size: clamp(18px, 2.4vw, 22px);
+        }
+
+        .month-year-btn {
+            background: transparent;
+            border: none;
+            color: #007aff;
+            font-weight: 500;
+            font-size: 16px;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        .month-year-btn:hover {
+            color: #005de8;
+        }
+        .month-year-btn:active {
+            opacity: 0.7;
+        }
+
+        .date-selector button {
+            background-color: transparent;
+            color: var(--text-color);
+            padding: clamp(6px, 1.4vw, 8px) clamp(8px, 2vw, 10px);
+            border-radius: 8px;
+        }
+
+        .nav-buttons button:hover, .date-selector button:hover {
+            background-color: #ccc;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-dots {
+            font-size: clamp(20px, 3vw, 26px);
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        /* Calendar Grid */
+        .calendar-container {
+            position: relative;
+            min-height: clamp(420px, 60vh, 800px);
+            background-color: #e0e0e0; /* Matches the gray background in the image */
+            padding: clamp(12px, 3vw, 20px) clamp(8px, 2vw, 12px);
+            display: grid;
+            grid-template-rows: auto auto 1fr;
+        }
+
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            padding: clamp(4px, 1vw, 8px) 0;
+            font-weight: bold;
+            color: var(--text-color);
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            margin-bottom: clamp(4px, 1vw, 8px);
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: clamp(2px, 0.6vw, 8px);
+            text-align: center;
+        }
+
+        .day-cell {
+            padding: clamp(6px, 1.6vw, 10px) 0;
+            cursor: pointer;
+            font-weight: 500;
+            position: relative;
+            background-color: var(--calendar-bg);
+            border-radius: 4px;
+            min-height: clamp(44px, 7.5vw, 88px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.1s;
+        }
+
+        .day-cell:hover {
+            background-color: #f0f0f0;
+        }
+
+        .day-cell.inactive {
+            color: #aaa;
+            background-color: #fafafa;
+            cursor: default;
+        }
+
+        .current-day {
+            background-color: var(--primary-color) !important;
+            color: white;
+            border-radius: 50%;
+            width: clamp(24px, 2.6vw, 32px);
+            height: clamp(24px, 2.6vw, 32px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 2px;
+        }
+
+        .day-number {
+            font-size: clamp(12px, 1.8vw, 16px);
+        }
+
+        /* Event Indicator Dot */
+        .event-dot {
+            width: 6px;
+            height: 6px;
+            background-color: var(--event-dot);
+            border-radius: 50%;
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Add Event Button (+) */
+        .add-btn {
+            background: linear-gradient(180deg, #007aff, #005de8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            font-size: 28px;
+            box-shadow: 0 4px 8px rgba(0, 122, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: absolute;
+            bottom: clamp(12px, 3vw, 20px);
+            right: clamp(12px, 3vw, 20px);
+            z-index: 10;
+            display: grid;
+            place-items: center;
+        }
+        .add-btn:hover {
+            filter: brightness(1.1);
+            transform: scale(1.05);
+        }
+        .add-btn:active {
+            transform: scale(0.95);
+            background: linear-gradient(180deg, #0066e0, #004db5);
+        }
+
+        /* Modal/Popup Styles (for selectors and event forms) */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            max-width: 92vw;
+            width: min(420px, 92vw);
+        }
+
+        .modal-content h3 {
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .selector-list button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: #fff;
+            cursor: pointer;
+            transition: background-color 0.1s;
+        }
+
+        .selector-list button:hover {
+            background-color: #f0f0f0;
+        }
+
+        .event-form input, .event-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .event-form button {
+            padding: 10px 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .event-details-content button {
+            background-color: var(--event-dot);
+            margin-top: 10px;
+        }
+
+        /* Responsive adjustments for smaller screens (optional, but good practice) */
+        @media (max-width: 1024px) {
+            .calendar-app { max-width: 1000px; }
+        }
+        @media (max-width: 768px) {
+            body { padding: 12px; }
+            .calendar-app { border-radius: 10px; }
+            .event-dot { bottom: 4px; }
+        }
+        @media (max-width: 480px) {
+            body { padding: 10px; }
+            .calendar-app { border-radius: 10px; }
+            .weekdays { font-size: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="calendar-app">
+        <div class="header">
+            <div class="nav-buttons">
+                <button id="prevMonthBtn" aria-label="Tháng trước">
+                    &larr;
+                </button>
+                <button id="nextMonthBtn" aria-label="Tháng sau">
+                    &rarr;
+                </button>
+            </div>
+            <div class="date-selector">
+                <button id="monthSelector">Tháng</button>
+                <button id="yearSelector">năm</button>
+            </div>
+            <div class="menu-dots">
+                &#8942;
+            </div>
+        </div>
+
+        <div class="calendar-container">
+            <div id="calendarDisplay" style="text-align: center; color: var(--text-color); font-weight: bold; font-size: 20px; margin-bottom: 10px;">
+                ô lịch nằm ở đây
+            </div>
+
+            <div class="weekdays">
+                <span>CN</span>
+                <span>T2</span>
+                <span>T3</span>
+                <span>T4</span>
+                <span>T5</span>
+                <span>T6</span>
+                <span>T7</span>
+            </div>
+
+            <div id="daysGrid" class="days-grid">
+                </div>
+
+            <button id="addEventBtn" class="add-btn">+</button>
+        </div>
+    </div>
+
+    <div id="selectorModal" class="modal">
+        <div class="modal-content">
+            <h3 id="selectorTitle">Chọn...</h3>
+            <div id="selectorList" class="selector-list">
+                </div>
+            <button onclick="closeModal('selectorModal')" style="margin-top: 15px; width: 100%; background: #ccc;">Đóng</button>
+        </div>
+    </div>
+
+    <div id="eventFormModal" class="modal">
+        <div class="modal-content">
+            <h3>Thêm sự kiện cho <span id="eventDateDisplay"></span></h3>
+            <form id="eventForm" class="event-form">
+                <input type="hidden" id="eventDayDate">
+                <input type="text" id="eventTitle" placeholder="Tên sự kiện" required>
+                <textarea id="eventDetails" placeholder="Chi tiết sự kiện (tùy chọn)"></textarea>
+                <button type="submit">Lưu sự kiện</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="eventDetailsModal" class="modal">
+        <div class="modal-content">
+            <h3>Sự kiện ngày <span id="popupEventDate"></span></h3>
+            <div id="eventDetailsContent" class="event-details-content">
+                </div>
+            <button onclick="deleteEvent()" style="background: var(--event-dot); margin-top: 10px; width: 100%;">Xóa sự kiện</button>
+            <button onclick="closeModal('eventDetailsModal')" style="margin-top: 10px; width: 100%; background: #ccc;">Đóng</button>
+        </div>
+    </div>
+
+    <script>
+        // --- JAVASCRIPT LOGIC ---
+
+        const monthNames = ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"];
+        const currentDate = new Date();
+        let currentMonth = currentDate.getMonth();
+        let currentYear = currentDate.getFullYear();
+        let selectedDayForEvent = null; // Used to track the date for adding/viewing events
+
+        // DOM Elements
+        const calendarDisplay = document.getElementById('calendarDisplay');
+        const daysGrid = document.getElementById('daysGrid');
+        const monthSelectorBtn = document.getElementById('monthSelector');
+        const yearSelectorBtn = document.getElementById('yearSelector');
+
+        // Modal Elements
+        const selectorModal = document.getElementById('selectorModal');
+        const selectorTitle = document.getElementById('selectorTitle');
+        const selectorList = document.getElementById('selectorList');
+        const eventFormModal = document.getElementById('eventFormModal');
+        const eventDateDisplay = document.getElementById('eventDateDisplay');
+        const eventDayDateInput = document.getElementById('eventDayDate');
+        const eventForm = document.getElementById('eventForm');
+        const eventDetailsModal = document.getElementById('eventDetailsModal');
+        const popupEventDate = document.getElementById('popupEventDate');
+        const eventDetailsContent = document.getElementById('eventDetailsContent');
+
+        // --- Event Storage (localStorage) ---
+
+        /** Loads events from localStorage. */
+        function loadEvents() {
+            try {
+                const events = JSON.parse(localStorage.getItem('calendarEvents')) || {};
+                return events;
+            } catch (e) {
+                console.error("Error loading events from storage:", e);
+                return {};
+            }
+        }
+
+        /** Saves events to localStorage. */
+        function saveEvents(events) {
+            localStorage.setItem('calendarEvents', JSON.stringify(events));
+        }
+
+        /** Gets events for a specific date (YYYY-MM-DD format). */
+        function getEventsForDate(dateKey) {
+            const events = loadEvents();
+            return events[dateKey] || [];
+        }
+
+        /** Adds a new event. */
+        function addEvent(dateKey, title, details) {
+            const events = loadEvents();
+            if (!events[dateKey]) {
+                events[dateKey] = [];
+            }
+            events[dateKey].push({ title, details, timestamp: new Date().toISOString() });
+            saveEvents(events);
+        }
+
+        /** Deletes all events for the currently selected day. */
+        function deleteEvent() {
+            if (!selectedDayForEvent) return;
+
+            const events = loadEvents();
+            delete events[selectedDayForEvent];
+            saveEvents(events);
+
+            // Re-render and close modal
+            renderCalendar();
+            closeModal('eventDetailsModal');
+        }
+
+        // --- Calendar Rendering ---
+
+        /** Generates the calendar grid for the current month and year. */
+        function renderCalendar() {
+            // Update header
+            calendarDisplay.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+            monthSelectorBtn.textContent = monthNames[currentMonth];
+            yearSelectorBtn.textContent = currentYear;
+            daysGrid.innerHTML = ''; // Clear previous days
+
+            const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay(); // 0 (Sun) to 6 (Sat)
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const daysInPrevMonth = new Date(currentYear, currentMonth, 0).getDate();
+            const today = new Date();
+            const events = loadEvents();
+
+            // 1. Fill in padding days (previous month)
+            for (let i = firstDayOfMonth - 1; i >= 0; i--) {
+                const prevDay = daysInPrevMonth - i;
+                const cell = createDayCell(prevDay, 'inactive');
+                daysGrid.appendChild(cell);
+            }
+
+            // 2. Fill in days of the current month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(currentYear, currentMonth, day);
+                const dateKey = formatDate(date); // YYYY-MM-DD
+                const isCurrentDay = today.toDateString() === date.toDateString();
+                const cell = createDayCell(day, isCurrentDay ? 'current' : '');
+
+                // Check for events
+                if (events[dateKey] && events[dateKey].length > 0) {
+                    const dot = document.createElement('div');
+                    dot.className = 'event-dot';
+                    cell.appendChild(dot);
+
+                    // Add event listener for event display popup
+                    cell.addEventListener('click', () => showEventDetails(dateKey));
+                } else {
+                    // Add event listener for adding event
+                    cell.addEventListener('click', () => showEventForm(dateKey));
+                }
+
+                daysGrid.appendChild(cell);
+            }
+
+            // 3. Fill in padding days (next month)
+            const totalCells = daysGrid.children.length;
+            const remainingCells = 42 - totalCells; // Max 6 rows * 7 days = 42
+            for (let i = 1; i <= remainingCells; i++) {
+                const cell = createDayCell(i, 'inactive');
+                daysGrid.appendChild(cell);
+            }
+        }
+
+        /** Helper to create a single day cell element. */
+        function createDayCell(dayNumber, className = '') {
+            const cell = document.createElement('div');
+            cell.className = `day-cell ${className}`;
+            const dayNumSpan = document.createElement('span');
+            dayNumSpan.className = 'day-number';
+            dayNumSpan.textContent = dayNumber;
+
+            if (className.includes('current')) {
+                const currentDayWrapper = document.createElement('div');
+                currentDayWrapper.className = 'current-day';
+                currentDayWrapper.appendChild(dayNumSpan);
+                cell.appendChild(currentDayWrapper);
+            } else {
+                cell.appendChild(dayNumSpan);
+            }
+
+            return cell;
+        }
+
+        /** Helper to format Date object to YYYY-MM-DD string. */
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        /** Helper to format YYYY-MM-DD string to DD/MM/YYYY for display. */
+        function formatDisplayDate(dateKey) {
+            const parts = dateKey.split('-');
+            return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+
+        // --- Navigation and Selection ---
+
+        /** Changes the month. */
+        function changeMonth(delta) {
+            currentMonth += delta;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            } else if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            renderCalendar();
+        }
+
+        /** Shows the Month or Year selection modal. */
+        function showSelector(type) {
+            selectorList.innerHTML = '';
+            let options = [];
+
+            if (type === 'month') {
+                selectorTitle.textContent = 'Chọn Tháng';
+                options = monthNames.map((name, index) => ({ name: name, value: index }));
+            } else if (type === 'year') {
+                selectorTitle.textContent = 'Chọn Năm';
+                // Display 5 years before and 5 years after current year
+                for (let i = currentYear - 5; i <= currentYear + 5; i++) {
+                    options.push({ name: i, value: i });
+                }
+            }
+
+            options.forEach(option => {
+                const btn = document.createElement('button');
+                btn.textContent = option.name;
+                btn.onclick = () => {
+                    if (type === 'month') {
+                        currentMonth = option.value;
+                    } else {
+                        currentYear = option.value;
+                    }
+                    renderCalendar();
+                    closeModal('selectorModal');
+                };
+                selectorList.appendChild(btn);
+            });
+
+            selectorModal.style.display = 'flex';
+        }
+
+        // --- Modals and Events ---
+
+        /** Closes a specific modal. */
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        /** Shows the form to add a new event. */
+        function showEventForm(dateKey) {
+            selectedDayForEvent = dateKey;
+            eventDateDisplay.textContent = formatDisplayDate(dateKey);
+            eventDayDateInput.value = dateKey;
+            document.getElementById('eventTitle').value = '';
+            document.getElementById('eventDetails').value = '';
+            eventFormModal.style.display = 'flex';
+        }
+
+        /** Shows the details of events for a day. */
+        function showEventDetails(dateKey) {
+            selectedDayForEvent = dateKey;
+            const events = getEventsForDate(dateKey);
+            popupEventDate.textContent = formatDisplayDate(dateKey);
+            eventDetailsContent.innerHTML = '';
+
+            if (events.length > 0) {
+                events.forEach(event => {
+                    const div = document.createElement('div');
+                    div.innerHTML = `<strong>${event.title}</strong><p style="margin-top: 5px; font-size: 14px;">${event.details || 'Không có chi tiết'}</p><hr style="margin: 5px 0;">`;
+                    eventDetailsContent.appendChild(div);
+                });
+            } else {
+                eventDetailsContent.innerHTML = '<p>Không có sự kiện nào.</p>';
+            }
+
+            eventDetailsModal.style.display = 'flex';
+        }
+
+        // --- Event Handlers ---
+
+        document.getElementById('prevMonthBtn').addEventListener('click', () => changeMonth(-1));
+        document.getElementById('nextMonthBtn').addEventListener('click', () => changeMonth(1));
+        monthSelectorBtn.addEventListener('click', () => showSelector('month'));
+        yearSelectorBtn.addEventListener('click', () => showSelector('year'));
+
+        document.getElementById('addEventBtn').addEventListener('click', () => {
+             // Default to current date if 'add event' button is pressed
+            const todayKey = formatDate(new Date());
+            showEventForm(todayKey);
+        });
+
+        eventForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const dateKey = eventDayDateInput.value;
+            const title = document.getElementById('eventTitle').value;
+            const details = document.getElementById('eventDetails').value;
+
+            addEvent(dateKey, title, details);
+            closeModal('eventFormModal');
+            renderCalendar(); // Re-render to show the new event dot
+        });
+
+        // Initial render
+        renderCalendar();
+    </script>
+</body>
+</html>
