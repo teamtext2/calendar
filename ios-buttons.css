@@ -1,0 +1,88 @@
+/* iOS-style button and subtle iOS calendar theming */
+:root{
+  --ios-blue-1: #007aff; /* primary */
+  --ios-blue-2: #005de8; /* deeper */
+  --bg-soft: #f9f9fb; /* warm light background */
+  --muted-border: #e5e5ea;
+  --surface: #f2f2f7;
+  --shadow-subtle: 0 6px 12px rgba(0,0,0,0.08);
+}
+
+/* Page-level subtle iOS tone */
+body {
+  background-color: var(--bg-soft) !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+}
+
+.calendar-app {
+  border: 1px solid var(--muted-border) !important;
+}
+
+.weekdays, .days-grid, .day-cell {
+  border-collapse: collapse;
+}
+
+.weekdays { border-bottom: 1px solid var(--muted-border); }
+
+/* Day hover: iOS blue subtle */
+.day-cell:hover {
+  background: rgba(0,122,255,0.06);
+}
+
+/* Primary Floating Add Button (iOS Floating Action Button) */
+.add-btn {
+  background: linear-gradient(180deg, var(--ios-blue-1), var(--ios-blue-2));
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  font-size: 28px;
+  box-shadow: var(--shadow-subtle);
+  cursor: pointer;
+  transition: transform 220ms cubic-bezier(.2,.9,.3,1), filter 180ms linear;
+  position: absolute;
+  bottom: clamp(12px, 3vw, 20px);
+  right: clamp(12px, 3vw, 20px);
+  z-index: 20;
+  display: grid;
+  place-items: center;
+}
+.add-btn:hover { filter: brightness(1.06); transform: translateY(-2px) scale(1.03); }
+.add-btn:active { transform: scale(0.96); background: linear-gradient(180deg, #0066e0, #004db5); }
+
+/* iOS round nav buttons */
+.nav-btn, .nav-buttons button {
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--surface);
+  border: 0;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
+  color: var(--ios-blue-1);
+  display: inline-grid;
+  place-items: center;
+  cursor: pointer;
+  transition: transform 140ms ease, background 140ms ease;
+}
+
+.nav-btn:hover, .nav-buttons button:hover { background: #e9e9ee; transform: translateY(-1px); }
+.nav-btn:active, .nav-buttons button:active { background: #dcdce6; transform: scale(0.96); }
+
+/* Month/Year text button */
+.month-year-btn {
+  background: transparent;
+  border: none;
+  color: var(--ios-blue-1);
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: color 160ms ease, opacity 120ms;
+}
+.month-year-btn:hover { color: var(--ios-blue-2); opacity: 0.95; }
+.month-year-btn:active { opacity: 0.65; }
+
+/* Utility: smaller shadow for modals to match iOS look */
+.modal-content { box-shadow: 0 8px 20px rgba(0,0,0,0.12) !important; }
