@@ -13,868 +13,608 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <style>
-    /* Mobile-first interaction improvements */
-    html { -webkit-tap-highlight-color: rgba(0,0,0,0); }
-    body { touch-action: manipulation; }
-    button, .btn { -webkit-touch-callout: none; user-select: none; }
-    /* Reset + base */
-    :root{
-      --bg:#FFFFFF; --card:#FFFFFF; --muted:#666666; --accent1:#1E90FF; --accent2:#1E90FF; --glass: rgba(0,0,0,0.03);
-      --radius:14px; --shadow: 0 4px 20px rgba(0,0,0,0.08);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;background:#FFFFFF;color:#1A1A1A}
-    a{color:inherit}
-
-    /* App frame - Responsive container */
-    .app{
-      max-width:1200px;
-      margin:clamp(8px, 3vw, 28px) auto;
-      padding:clamp(12px, 3vw, 28px);
-      border-radius:clamp(12px, 2vw, 20px);
-      background:#FFFFFF;
-      box-shadow:0 2px 16px rgba(0,0,0,0.06);
-      border:1px solid rgba(0,0,0,0.06);
-      display:grid;
-      grid-template-columns:1fr min(320px, 30vw);
-      gap:clamp(12px, 2vw, 22px);
-      min-height:calc(100vh - clamp(16px, 6vw, 56px));
+    :root {
+      --primary: #007aff;
+      --primary-light: #66b0ff;
+      --white: #ffffff;
+      --bg: #f7f9fc;
+      --text: #1c2526;
+      --glass-bg: rgba(255, 255, 255, 0.3);
+      --glass-border: rgba(255, 255, 255, 0.5);
+      --shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      --shadow-deep: 0 6px 20px rgba(0, 0, 0, 0.15), inset 0 -2px 4px rgba(255, 255, 255, 0.2);
+      --radius: 24px;
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
 
-    /* Header - Responsive */
-    header{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:clamp(8px, 2vw, 12px);
-      flex-wrap:wrap;
-    }
-    .title{display:flex;gap:clamp(8px, 2vw, 12px);align-items:center}
-    .brand{
-      width:clamp(40px, 8vw, 56px);
-      height:clamp(40px, 8vw, 56px);
-      border-radius:clamp(8px, 2vw, 12px);
-      background:linear-gradient(135deg,var(--accent1),var(--accent2));
-      display:flex;align-items:center;justify-content:center;font-weight:700;
-      flex-shrink:0;
-    }
-    .brand span{filter:drop-shadow(0 6px 18px rgba(124,92,255,0.34));}
-    h1{margin:0;font-size:clamp(16px, 4vw, 20px);line-height:1.2}
-    p.lead{margin:0;color:var(--muted);font-size:clamp(11px, 2.5vw, 13px)}
-
-    /* Controls - Responsive */
-    .controls{display:flex;gap:clamp(6px, 1.5vw, 8px);align-items:center;flex-wrap:wrap}
-    .btn{
-      background:var(--glass);
-      padding:clamp(8px, 2vw, 10px) clamp(10px, 2.5vw, 12px);
-      border-radius:clamp(8px, 2vw, 10px);
-      border:1px solid rgba(0,0,0,0.06);
-      cursor:pointer;
-      font-size:clamp(12px, 2.5vw, 14px);
-      white-space:nowrap;
-      -webkit-tap-highlight-color: transparent;
-      transition: transform .12s ease;
-    }
-    .btn:active { transform: translateY(1px); }
-    .btn.primary{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#041223;font-weight:600;border:none}
-    .nav{display:flex;gap:clamp(4px, 1vw, 6px);align-items:center}
-
-    /* Calendar - Responsive */
-    .calendar{
-      background:rgba(0,0,0,0.02);
-      padding:clamp(12px, 3vw, 18px);
-      border-radius:clamp(12px, 2vw, 16px);
-    }
-    .calendar .weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:clamp(3px, 1vw, 6px);margin-bottom:clamp(6px, 1.5vw, 8px)}
-    .weekday{font-size:clamp(10px, 2vw, 12px);color:var(--muted);text-align:center;font-weight:600}
-    .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:clamp(4px, 1.5vw, 8px)}
-    .day{
-      min-height:clamp(60px, 12vw, 86px);
-      background:rgba(173, 216, 230, 0.15);
-      border-radius:clamp(8px, 2vw, 12px);
-      padding:clamp(6px, 1.5vw, 8px);
-      position:relative;
-      transition:transform .15s;
-      border:1px solid rgba(0,0,0,0.08);
-    }
-    .day:hover{transform:translateY(-2px)}
-    .day:active{transform:translateY(0)}
-    .day .num{
-      position:absolute;
-      top:clamp(6px, 1.5vw, 8px);
-      left:clamp(6px, 1.5vw, 8px);
-      font-weight:700;
-      font-size:clamp(12px, 2.5vw, 14px);
-    }
-    .day.inactive{color:rgba(230,238,248,0.32)}
-    .day.today{box-shadow:inset 0 0 0 2px rgba(61,211,193,0.08);border:1px solid rgba(61,211,193,0.12)}
-
-    /* Event pill - Responsive */
-    .event-pill{
-      display:block;
-      margin-top:clamp(20px, 4vw, 28px);
-      font-size:clamp(10px, 2vw, 12px);
-      padding:clamp(4px, 1vw, 6px) clamp(6px, 1.5vw, 8px);
-      border-radius:999px;
-      max-width:88%;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      border:1px solid rgba(0,0,0,0.06);
-    }
-    .dot{
-      display:inline-block;
-      width:clamp(8px, 2vw, 10px);
-      height:clamp(8px, 2vw, 10px);
-      border-radius:50%;
-      margin-right:clamp(6px, 1.5vw, 8px);
-      vertical-align:middle;
+    * {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
+      margin: 0;
+      padding: 0;
     }
 
-    /* Sidebar - Responsive */
-    aside{display:flex;flex-direction:column;gap:clamp(8px, 2vw, 12px)}
-    .card{
-      background:linear-gradient(180deg, rgba(0,0,0,0.01), rgba(0,0,0,0.02));
-      padding:clamp(10px, 2.5vw, 12px);
-      border-radius:clamp(10px, 2vw, 12px);
-    }
-    .mini{display:flex;align-items:center;justify-content:space-between;gap:8px}
-    .events-list{
-      max-height:clamp(300px, 50vh, 420px);
-      overflow:auto;
-      padding-right:clamp(4px, 1vw, 6px);
-    }
-    .ev-item{
-      padding:clamp(8px, 2vw, 10px);
-      border-radius:clamp(8px, 2vw, 10px);
-      margin-bottom:clamp(6px, 1.5vw, 8px);
-      background:rgba(0,0,0,0.02);
-      display:flex;
-      align-items:center;
-      gap:clamp(8px, 2vw, 10px);
-      flex-wrap:wrap;
-    }
-    .ev-item .meta{font-size:clamp(10px, 2vw, 12px);color:var(--muted)}
-
-    /* Modal - Responsive */
-    .modal-backdrop{
-      position:fixed;
-      inset:0;
-      background:linear-gradient(0deg, rgba(0,0,0,0.6), rgba(0,0,0,0.6));
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding:clamp(16px, 4vw, 20px);
-    }
-    .modal{
-      width:min(420px, 90vw);
-      max-width:100%;
-      background:#FFFFFF;
-      border-radius:clamp(10px, 2vw, 12px);
-      padding:clamp(12px, 3vw, 16px);
-      box-shadow:0 10px 40px rgba(0,0,0,0.12);
-      max-height:90vh;
-      overflow-y:auto;
-      /* Prevent iOS input zoom by ensuring >=16px */
-      font-size:16px;
-    }
-    .field{margin-bottom:clamp(6px, 1.5vw, 8px)}
-    input,textarea,select{
-      width:100%;
-      padding:clamp(8px, 2vw, 10px);
-      border-radius:clamp(6px, 1.5vw, 8px);
-      border:1px solid rgba(0,0,0,0.08);
-      background:transparent;
-      color:inherit;
-      font-size:16px; /* iOS zoom prevention */
+    body {
+      background: linear-gradient(180deg, #e5efff, #d4e2ff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      height: 100vh;
+      padding: 0;
+      overflow: hidden;
     }
 
-    /* Tiny helpers */
-    .muted{color:var(--muted);font-size:clamp(11px, 2vw, 13px)}
-    .flex{display:flex;gap:clamp(6px, 1.5vw, 8px);align-items:center;flex-wrap:wrap}
-    .right{margin-left:auto}
-
-    /* Responsive Breakpoints */
-    
-    /* Large tablets and small laptops */
-    @media (max-width: 1024px) {
-      .app {
-        grid-template-columns: 1fr 280px;
-        gap: 16px;
-      }
-      .day {
-        min-height: 70px;
-      }
+    .calendar-app {
+      width: 100%;
+      max-width: 1000px;
+      height: 100vh;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      border: 1px solid var(--glass-border);
+      display: flex;
+      flex-direction: column;
     }
 
-    /* Tablets */
+    /* HEADER */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.2));
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--glass-border);
+      flex-shrink: 0;
+    }
+
+    .nav-buttons button {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      width: 44px;
+      height: 44px;
+      font-size: 20px;
+      color: var(--primary);
+      box-shadow: var(--shadow-deep);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .nav-buttons button:hover {
+      transform: translateY(-2px);
+      background: var(--primary-light);
+      color: var(--white);
+      box-shadow: 0 8px 24px rgba(0, 122, 255, 0.3);
+    }
+
+    .date-selector button {
+      background: transparent;
+      border: none;
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 16px;
+      margin: 0 8px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .date-selector button:hover {
+      color: #0051cc;
+    }
+
+    .menu-dots {
+      font-size: 28px;
+      color: var(--text);
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 12px;
+      transition: var(--transition);
+    }
+
+    .menu-dots:hover {
+      background: var(--glass-bg);
+      box-shadow: var(--shadow);
+    }
+
+    /* CALENDAR */
+    .calendar-container {
+      background: transparent;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    #calendarDisplay {
+      text-align: center;
+      font-weight: 600;
+      font-size: 18px;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    .weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      color: #5c6b73;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    .days-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .day-cell {
+      background: var(--glass-bg);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .day-cell:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0, 122, 255, 0.2);
+    }
+
+    .day-cell.inactive {
+      color: #8e9ba3;
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: none;
+    }
+
+    .day-number {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .current-day {
+      background: var(--primary);
+      color: var(--white);
+      border-radius: 50%;
+      padding: 10px 14px;
+      font-weight: bold;
+      box-shadow: 0 0 10px rgba(0, 122, 255, 0.5);
+    }
+
+    .event-dot {
+      position: absolute;
+      bottom: 10px;
+      width: 8px;
+      height: 8px;
+      background: #ff3b30;
+      border-radius: 50%;
+      box-shadow: 0 0 6px rgba(255, 59, 48, 0.5);
+    }
+
+    /* ADD BUTTON */
+    .add-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: linear-gradient(135deg, #007aff, #0051cc);
+      color: var(--white);
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      font-size: 30px;
+      cursor: pointer;
+      box-shadow: var(--shadow-deep), 0 0 12px rgba(0, 122, 255, 0.4);
+      transition: var(--transition);
+      z-index: 50;
+    }
+
+    .add-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 10px 30px rgba(0, 122, 255, 0.5);
+      filter: brightness(1.2);
+    }
+
+    /* MODALS */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      padding: 20px;
+      overflow: auto;
+    }
+
+    .modal-content {
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+      width: min(450px, 90vw);
+      max-height: 80vh;
+      overflow-y: auto;
+      animation: slideIn 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-content h3 {
+      color: var(--primary);
+      margin-bottom: 16px;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    input, textarea {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.4);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 14px;
+      margin-bottom: 12px;
+      transition: var(--transition);
+    }
+
+    input:focus, textarea:focus {
+      background: rgba(255, 255, 255, 0.6);
+      border-color: var(--primary);
+      outline: none;
+    }
+
+    .event-form button,
+    .modal-content button {
+      width: 100%;
+      background: var(--primary);
+      color: var(--white);
+      border: none;
+      padding: 12px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: var(--shadow-deep);
+      margin-top: 8px;
+    }
+
+    .event-form button:hover,
+    .modal-content button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 122, 255, 0.3);
+      filter: brightness(1.1);
+    }
+
+    .modal-content button[style*="background: #ccc"] {
+      background: rgba(255, 255, 255, 0.4);
+      color: var(--text);
+      box-shadow: var(--shadow);
+    }
+
+    .modal-content button[style*="background: #ff3b30"] {
+      background: #ff3b30;
+      box-shadow: var(--shadow);
+    }
+
+    /* Responsive Optimizations */
     @media (max-width: 768px) {
-      .app {
-        grid-template-columns: 1fr;
-        padding: 16px;
-        margin: 8px auto;
-        gap: 16px;
-      }
-      aside {
-        order: 2;
-      }
-      header {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 12px;
-      }
-      .title {
-        justify-content: center;
-        text-align: center;
-      }
-      .controls {
-        justify-content: center;
-        flex-wrap: wrap;
-      }
-      .day {
-        min-height: 65px;
-      }
-      .event-pill {
-        font-size: 10px;
-        margin-top: 18px;
-      }
+      body { padding: 0; }
+      .calendar-app { max-width: 100%; height: 100vh; border-radius: 0; }
+      .header { padding: 12px 16px; }
+      .calendar-container { padding: 16px; }
+      .weekdays span { font-size: 12px; }
+      .days-grid { gap: 8px; }
+      .day-number { font-size: 14px; }
+      .add-btn { width: 52px; height: 52px; font-size: 26px; bottom: 20px; right: 20px; }
+      .nav-buttons button { width: 40px; height: 40px; font-size: 18px; }
+      .date-selector button { font-size: 14px; margin: 0 6px; }
+      #calendarDisplay { font-size: 16px; }
     }
 
-    /* Mobile phones */
     @media (max-width: 480px) {
-      .app {
-        margin: max(4px, env(safe-area-inset-top)) auto max(4px, env(safe-area-inset-bottom));
-        padding: 12px;
-        border-radius: 12px;
-      }
-      header {
-        gap: 8px;
-      }
-      h1 {
-        font-size: 16px;
-      }
-      p.lead {
-        font-size: 11px;
-      }
-      .brand {
-        width: 40px;
-        height: 40px;
-      }
-      .day {
-        min-height: 55px;
-        padding: 4px;
-      }
-      .day .num {
-        font-size: 12px;
-        top: 4px;
-        left: 4px;
-      }
-      .event-pill {
-        margin-top: 16px;
-        font-size: 9px;
-        padding: 3px 5px;
-      }
-      .dot {
-        width: 6px;
-        height: 6px;
-        margin-right: 4px;
-      }
-      .btn {
-        padding: 6px 8px;
-        font-size: 12px;
-      }
-      .calendar {
-        padding: 10px;
-      }
-      /* Tone down hover effects on touch */
-      .day:hover { transform:none; }
-      .btn:hover { transform:none; }
-      .grid {
-        gap: 3px;
-      }
-      .weekdays {
-        gap: 3px;
-      }
-      .weekday {
-        font-size: 10px;
-      }
-      .ev-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
-      }
-      .ev-item .right {
-        margin-left: 0;
-        align-self: flex-end;
-        gap: 4px;
-      }
-      .modal {
-        width: 95vw;
-        padding: 12px;
-      }
-      .events-list {
-        max-height: 250px;
-      }
+      .calendar-app { max-width: 100%; }
+      .add-btn { width: 48px; height: 48px; font-size: 24px; bottom: 16px; right: 16px; }
+      .modal-content { padding: 16px; width: 95vw; }
+      input, textarea { font-size: 12px; padding: 10px; }
+      .event-form button, .modal-content button { padding: 10px; font-size: 14px; }
+      .modal-content h3 { font-size: 18px; }
+      .weekdays span { font-size: 10px; }
+      .day-number { font-size: 12px; }
+      .event-dot { bottom: 6px; width: 6px; height: 6px; }
     }
 
-    /* Very small screens */
-    @media (max-width: 320px) {
-      .app {
-        padding: 8px;
-        margin: 2px auto;
-      }
-      .day {
-        min-height: 45px;
-        padding: 3px;
-      }
-      .day .num {
-        font-size: 11px;
-        top: 3px;
-        left: 3px;
-      }
-      .event-pill {
-        margin-top: 14px;
-        font-size: 8px;
-        padding: 2px 4px;
-      }
-      .calendar {
-        padding: 8px;
-      }
-      .grid {
-        gap: 2px;
-      }
-      .weekdays {
-        gap: 2px;
-      }
-      h1 {
-        font-size: 14px;
-      }
-      .btn {
-        padding: 5px 6px;
-        font-size: 11px;
-      }
+    /* Dynamic Height Adjustment for Day Cells */
+    .days-grid > .day-cell {
+      height: calc((100% - 40px) / 6); /* Assume max 6 rows, adjust gap */
     }
 
-    /* Landscape orientation on mobile */
-    @media (max-width: 768px) and (orientation: landscape) {
-      .app {
-        grid-template-columns: 1fr 250px;
+    @media (max-height: 600px) {
+      .days-grid > .day-cell {
+        height: calc((100% - 30px) / 6);
       }
-      aside {
-        order: 0;
-      }
-      .events-list {
-        max-height: 200px;
-      }
-    }
-
-    /* High DPI displays */
-    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-      .brand img {
-        image-rendering: -webkit-optimize-contrast;
-        image-rendering: crisp-edges;
-      }
-    }
-
-    /* Dark mode support for system preference */
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg:#1A1A1A; --card:#1E1E1E; --muted:#B0B0B0; --glass: rgba(255,255,255,0.06);
-        --shadow: 0 8px 30px rgba(0,0,0,0.4);
-      }
-      html, body {
-        background: linear-gradient(180deg,#121212 0%, #1A1A1A 55%, #1A1A1A 100%);
-        color: #FFFFFF;
-      }
-      .app { background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); }
-      .calendar { background:rgba(255,255,255,0.02); }
-      .btn { border:1px solid rgba(255,255,255,0.02); }
-      .event-pill { border:1px solid rgba(255,255,255,0.03); }
-      .card { background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02)); }
-      .ev-item { background:rgba(255,255,255,0.02); }
-      .modal-backdrop { background:linear-gradient(0deg, rgba(2,6,23,0.6), rgba(2,6,23,0.6)); }
-      .modal { background:#071428; box-shadow:0 10px 40px rgba(2,6,23,0.7); }
-      input,textarea,select { border:1px solid rgba(255,255,255,0.04); }
-    }
-
-    /* Reduce motion for accessibility */
-    @media (prefers-reduced-motion: reduce) {
-      .day {
-        transition: none;
-      }
-      .day:hover {
-        transform: none;
-      }
-    }
-    /* Clarity tweaks */
-    .day{border:1px solid rgba(0,0,0,0.08)}
-    .weekday{letter-spacing:0.2px}
-    .day.today{border-color: rgba(61,211,193,0.28)}
-    .ev-item{border:1px solid rgba(0,0,0,0.08)}
-    .events-list::-webkit-scrollbar{width:8px;height:8px}
-    .events-list::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:8px}
-    @media (prefers-color-scheme: dark) {
-      .day{border:1px solid rgba(255,255,255,0.04)}
-      .ev-item{border:1px solid rgba(255,255,255,0.04)}
-      .events-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1)}
+      .calendar-container { padding: 10px; }
+      .header { padding: 10px 12px; }
     }
   </style>
 </head>
 <body>
-  <div class="app">
-    <div>
-      <header>
-        <div class="title">
-          <div class="brand"><img src="favicon.ico" alt="Text2 Logo" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;"></div>
-          <div>
-            <h1>Text2 — Calendar</h1>
-            <p class="lead">schedule management and best</p>
-          </div>
-        </div>
-        <div class="controls">
-          <div class="nav">
-            <button class="btn" id="prev">◀</button>
-            <div style="padding:10px 14px;border-radius:10px;background:rgba(255,255,255,0.02);display:flex;align-items:center;gap:10px">
-              <strong id="curMonth">Month</strong>
-              <span class="muted" id="curYear">2025</span>
-            </div>
-            <button class="btn" id="next">▶</button>
-          </div>
-          <input type="file" id="fileInput" accept=".ics,.csv" style="display:none">
-          <button class="btn" id="importBtn">Import file</button>
-          <button class="btn primary" id="addEventBtn">+ Add Event</button>
-        </div>
-      </header>
-
-      <main style="margin-top:16px">
-        <div class="calendar card">
-          <div class="weekdays" id="weekdays"></div>
-          <div class="grid" id="daysGrid"></div>
-        </div>
-      </main>
+  <div class="calendar-app">
+    <div class="header">
+      <div class="nav-buttons">
+        <button id="prevMonthBtn">⟵</button>
+        <button id="nextMonthBtn">⟶</button>
+      </div>
+      <div class="date-selector">
+        <button id="monthSelector">Tháng</button>
+        <button id="yearSelector">Năm</button>
+      </div>
+      <div class="menu-dots">⋮</div>
     </div>
 
-    <aside>
-      <div class="card mini">
-        <div>
-          <div class="muted">Today</div>
-          <div style="font-weight:700" id="todayPretty">—</div>
-        </div>
-        <div class="flex">
-          <button class="btn" id="gotoToday">Today</button>
-        </div>
+    <div class="calendar-container">
+      <div id="calendarDisplay"></div>
+      <div class="weekdays">
+        <span>CN</span><span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span>
       </div>
-
-      <div class="card">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-          <div style="font-weight:700">Upcoming Events</div>
-          <div class="muted" id="evtCount">0</div>
-        </div>
-        <div class="events-list" id="eventsList">
-        </div>
-      </div>
-
-    </aside>
-
-    <!-- Modal -->
-    <div class="modal-backdrop" id="modal">
-      <div class="modal">
-        <h3 id="modalTitle">Add Event</h3>
-        <div class="field">
-          <label class="muted">Title</label>
-          <input id="evTitle" placeholder="e.g., Team Meeting" />
-        </div>
-        <div class="field">
-          <label class="muted">Description</label>
-          <textarea id="evDesc" rows="3" placeholder="Brief details"></textarea>
-        </div>
-        <div class="field">
-          <label class="muted">Date</label>
-          <input id="evDate" type="date" />
-        </div>
-        <div class="field">
-          <label class="muted">Time (optional)</label>
-          <input id="evTime" type="time" />
-        </div>
-        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:6px">
-          <button class="btn" id="cancelBtn">Cancel</button>
-          <button class="btn primary" id="saveBtn">Save</button>
-        </div>
-      </div>
+      <div id="daysGrid" class="days-grid"></div>
     </div>
+  </div>
 
+  <button id="addEventBtn" class="add-btn">+</button>
+
+  <!-- Modals -->
+  <div id="selectorModal" class="modal">
+    <div class="modal-content">
+      <h3 id="selectorTitle">Chọn...</h3>
+      <div id="selectorList"></div>
+      <button onclick="closeModal('selectorModal')" style="background:#ccc;">Đóng</button>
+    </div>
+  </div>
+
+  <div id="eventFormModal" class="modal">
+    <div class="modal-content">
+      <h3>Thêm sự kiện cho <span id="eventDateDisplay"></span></h3>
+      <form id="eventForm" class="event-form">
+        <input type="hidden" id="eventDayDate">
+        <input type="text" id="eventTitle" placeholder="Tên sự kiện" required>
+        <textarea id="eventDetails" placeholder="Chi tiết (tùy chọn)"></textarea>
+        <button type="submit">Lưu</button>
+      </form>
+      <button onclick="closeModal('eventFormModal')" style="background:#ccc;">Đóng</button>
+    </div>
+  </div>
+
+  <div id="eventDetailsModal" class="modal">
+    <div class="modal-content">
+      <h3>Sự kiện ngày <span id="popupEventDate"></span></h3>
+      <div id="eventDetailsContent"></div>
+      <button onclick="deleteEvent()" style="background:#ff3b30;">Xóa</button>
+      <button onclick="closeModal('eventDetailsModal')" style="background:#ccc;">Đóng</button>
+    </div>
   </div>
 
   <script>
-  // Tiny calendar app — single-file. Storage using localStorage.
-  (function(){
-    const localeEN = {weekdays: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], months: ['January','February','March','April','May','June','July','August','September','October','November','December']}
-    const state = {viewDate: new Date(), events: []}
-    const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
+    const monthNames = ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"];
+    const calendarDisplay = document.getElementById("calendarDisplay");
+    const daysGrid = document.getElementById("daysGrid");
+    const monthSelectorBtn = document.getElementById("monthSelector");
+    const yearSelectorBtn = document.getElementById("yearSelector");
+    const selectorModal = document.getElementById("selectorModal");
+    const selectorTitle = document.getElementById("selectorTitle");
+    const selectorList = document.getElementById("selectorList");
+    const eventFormModal = document.getElementById("eventFormModal");
+    const eventDetailsModal = document.getElementById("eventDetailsModal");
+    const popupEventDate = document.getElementById("popupEventDate");
+    const eventDetailsContent = document.getElementById("eventDetailsContent");
+    const eventForm = document.getElementById("eventForm");
+    const eventDateDisplay = document.getElementById("eventDateDisplay");
+    const eventDayDateInput = document.getElementById("eventDayDate");
 
-    // Elements
-    const weekdaysEl = document.getElementById('weekdays')
-    const daysGrid = document.getElementById('daysGrid')
-    const curMonth = document.getElementById('curMonth')
-    const curYear = document.getElementById('curYear')
-    const todayPretty = document.getElementById('todayPretty')
-    const eventsList = document.getElementById('eventsList')
-    const evtCount = document.getElementById('evtCount')
+    let currentDate = new Date();
+    let currentMonth = currentDate.getMonth();
+    let currentYear = currentDate.getFullYear();
+    let selectedDayForEvent = null;
 
-    const modal = document.getElementById('modal')
-    const addEventBtn = document.getElementById('addEventBtn')
-    const cancelBtn = document.getElementById('cancelBtn')
-    const saveBtn = document.getElementById('saveBtn')
-    const evTitle = document.getElementById('evTitle')
-    const evDesc = document.getElementById('evDesc')
-    const evDate = document.getElementById('evDate')
-    const evTime = document.getElementById('evTime')
-    const modalTitle = document.getElementById('modalTitle')
-
-    const prev = document.getElementById('prev')
-    const next = document.getElementById('next')
-    const gotoToday = document.getElementById('gotoToday')
-    const importBtn = document.getElementById('importBtn')
-    const fileInput = document.getElementById('fileInput')
-
-    // Load
-    function load(){
-      try{state.events = JSON.parse(localStorage.getItem('t2_calendar_v1')||'[]')}catch(e){state.events=[]}
-    }
-    function save(){localStorage.setItem('t2_calendar_v1', JSON.stringify(state.events))}
-
-    // Render weekdays
-    function renderWeekdays(){weekdaysEl.innerHTML = '';
-      for(let i=0;i<7;i++){const el = document.createElement('div');el.className='weekday';el.textContent = localeEN.weekdays[i];weekdaysEl.appendChild(el)}
+    function loadEvents() {
+      return JSON.parse(localStorage.getItem("calendarEvents") || "{}");
     }
 
-    // Helpers
-    function startOfMonth(d){return new Date(d.getFullYear(), d.getMonth(),1)}
-    function endOfMonth(d){return new Date(d.getFullYear(), d.getMonth()+1,0)}
-    function sameDay(a,b){return a.getFullYear()==b.getFullYear()&&a.getMonth()==b.getMonth()&&a.getDate()==b.getDate()}
-    function formatPretty(d){return d.toLocaleDateString('en-US',{weekday:'short',day:'numeric',month:'short'})}
+    function saveEvents(e) {
+      localStorage.setItem("calendarEvents", JSON.stringify(e));
+    }
 
-    // Render calendar grid
-    function renderCalendar(){
-      daysGrid.innerHTML=''
-      const view = state.viewDate
-      const start = startOfMonth(view)
-      const end = endOfMonth(view)
-      const startWeek = start.getDay() // 0..6 (Sun..Sat)
-      const daysInMonth = end.getDate()
+    function getEventsForDate(d) {
+      return loadEvents()[d] || [];
+    }
 
-      curMonth.textContent = localeEN.months[view.getMonth()]
-      curYear.textContent = view.getFullYear()
-      todayPretty.textContent = formatPretty(new Date())
+    function formatDate(d) {
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    }
 
-      // previous month days fill
-      const prevMonthLastDay = new Date(view.getFullYear(), view.getMonth(), 0).getDate()
-      const totalCells = Math.ceil((startWeek + daysInMonth)/7)*7
+    function formatDisplayDate(d) {
+      const p = d.split("-");
+      return `${p[2]}/${p[1]}/${p[0]}`;
+    }
 
-      for(let cell=0;cell<totalCells;cell++){
-        const cellEl = document.createElement('div');cellEl.className='day card'
-        const dayNum = cell - startWeek + 1
-        let cellDate
-        if(dayNum <= 0){ // prev month
-          cellDate = new Date(view.getFullYear(), view.getMonth()-1, prevMonthLastDay + dayNum)
-          cellEl.classList.add('inactive')
-        }else if(dayNum > daysInMonth){ // next month
-          cellDate = new Date(view.getFullYear(), view.getMonth()+1, dayNum - daysInMonth)
-          cellEl.classList.add('inactive')
-        }else{
-          cellDate = new Date(view.getFullYear(), view.getMonth(), dayNum)
+    function renderCalendar() {
+      const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+      const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+      const daysInPrevMonth = new Date(currentYear, currentMonth, 0).getDate();
+      daysGrid.innerHTML = "";
+      calendarDisplay.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+      monthSelectorBtn.textContent = monthNames[currentMonth];
+      yearSelectorBtn.textContent = currentYear;
+
+      let rowCount = Math.ceil((firstDay + daysInMonth) / 7);
+
+      // Adjust day-cell height dynamically based on row count
+      const gridHeight = daysGrid.clientHeight;
+      const gapTotal = (rowCount - 1) * 10; // gap is 10px
+      const cellHeight = (gridHeight - gapTotal) / rowCount;
+      document.querySelectorAll('.day-cell').forEach(cell => {
+        cell.style.height = `${cellHeight}px`;
+      });
+
+      for (let i = firstDay - 1; i >= 0; i--) {
+        const prev = daysInPrevMonth - i;
+        const cell = createCell(prev, "inactive");
+        daysGrid.appendChild(cell);
+      }
+
+      const today = new Date();
+      const events = loadEvents();
+      for (let d = 1; d <= daysInMonth; d++) {
+        const date = new Date(currentYear, currentMonth, d);
+        const key = formatDate(date);
+        const cell = createCell(d, "");
+        if (today.toDateString() === date.toDateString()) {
+          const span = cell.querySelector(".day-number");
+          span.classList.add("current-day");
         }
-        const num = document.createElement('div');num.className='num';num.textContent = cellDate.getDate();cellEl.appendChild(num)
-
-        // events for date
-        const evs = eventsForDate(cellDate)
-        evs.slice(0,2).forEach(ev=>{
-          const pill = document.createElement('span');pill.className='event-pill'
-          pill.title = ev.title + (ev.time?(' • '+ev.time):'') + '\n'+(ev.desc||'')
-          const dot = document.createElement('i');dot.className='dot';dot.style.background = ev.color || 'linear-gradient(90deg,var(--accent1),var(--accent2))'
-          pill.appendChild(dot)
-          const txt = document.createElement('span');txt.textContent = ev.title
-          pill.appendChild(txt)
-          cellEl.appendChild(pill)
-        })
-
-        if(sameDay(cellDate,new Date())) cellEl.classList.add('today')
-
-        cellEl.addEventListener('click', ()=> openModalForDate(cellDate))
-
-        daysGrid.appendChild(cellEl)
-      }
-
-    }
-
-    // Events
-    function eventsForDate(d){
-      const key = keyForDate(d)
-      return state.events.filter(e=>e.dateKey===key).sort((a,b)=> (a.time||'') > (b.time||'') ? 1 : -1)
-    }
-    function keyForDate(d){return d.getFullYear()+'-'+(d.getMonth()+1).toString().padStart(2,'0')+'-'+d.getDate().toString().padStart(2,'0')}
-
-    function renderEventsList(){
-      eventsList.innerHTML=''
-      const sorted = state.events.slice().sort((a,b)=> a.dateKey.localeCompare(b.dateKey) || (a.time||'').localeCompare(b.time||''))
-      evtCount.textContent = sorted.length
-      if(sorted.length===0){eventsList.innerHTML = '<div class="muted">No events yet. Try adding one!</div>';return}
-
-      sorted.forEach(ev=>{
-        const it = document.createElement('div');it.className='ev-item'
-        const col = document.createElement('div');col.className='dot';col.style.background = ev.color || 'linear-gradient(90deg,var(--accent1),var(--accent2))'
-        it.appendChild(col)
-        const body = document.createElement('div')
-        body.innerHTML = `<div style="font-weight:700">${ev.title}</div><div class='meta'>${ev.dateKey}${ev.time?(' • '+ev.time):''}${ev.desc?('<br>'+ev.desc):''}</div>`
-        it.appendChild(body)
-
-        const controls = document.createElement('div');controls.className='right'
-        const edit = document.createElement('button');edit.className='btn';edit.textContent='Edit';
-        const del = document.createElement('button');del.className='btn';del.textContent='Delete';
-        edit.addEventListener('click', ()=> openModalForEdit(ev))
-        del.addEventListener('click', ()=> {if(confirm('Delete this event?')){state.events = state.events.filter(x=>x.id!==ev.id);save();renderCalendar();renderEventsList()}})
-        controls.appendChild(edit);controls.appendChild(del)
-        it.appendChild(controls)
-
-        eventsList.appendChild(it)
-      })
-    }
-
-    // Modal operations
-    let editingId = null
-    function openModalForDate(d){
-      editingId = null
-      modalTitle.textContent = 'Add Event'
-      evTitle.value = ''
-      evDesc.value = ''
-      evDate.value = d.toISOString().slice(0,10)
-      evTime.value = ''
-      showModal()
-    }
-    function openModalForEdit(ev){
-      editingId = ev.id
-      modalTitle.textContent = 'Edit Event'
-      evTitle.value = ev.title
-      evDesc.value = ev.desc || ''
-      evDate.value = ev.dateKey
-      evTime.value = ev.time || ''
-      showModal()
-    }
-
-    function showModal(){modal.style.display='flex'}
-    function hideModal(){modal.style.display='none'}
-
-    saveBtn.addEventListener('click', ()=>{
-      const title = evTitle.value.trim() || '(No title)'
-      const desc = evDesc.value.trim()
-      const dateKey = evDate.value
-      if(!dateKey){alert('Please select a date');return}
-      const time = evTime.value
-      if(editingId){
-        const ev = state.events.find(x=>x.id===editingId)
-        if(ev){ev.title=title;ev.desc=desc;ev.dateKey=dateKey;ev.time=time}
-      }else{
-        const id = Date.now().toString(36)+Math.random().toString(36).slice(2,7)
-        state.events.push({id,title,desc,dateKey,time,color:randomColor()})
-      }
-      save();renderCalendar();renderEventsList();hideModal();
-    })
-    cancelBtn.addEventListener('click', hideModal)
-    document.getElementById('modal').addEventListener('click', (e)=>{if(e.target===modal) hideModal()})
-
-    // Controls
-    prev.addEventListener('click', ()=>{state.viewDate = new Date(state.viewDate.getFullYear(), state.viewDate.getMonth()-1,1);renderCalendar()})
-    next.addEventListener('click', ()=>{state.viewDate = new Date(state.viewDate.getFullYear(), state.viewDate.getMonth()+1,1);renderCalendar()})
-    gotoToday.addEventListener('click', ()=>{state.viewDate = new Date();renderCalendar()})
-    addEventBtn.addEventListener('click', ()=>{openModalForDate(new Date())})
-
-    // Import events (ICS/CSV)
-    importBtn.addEventListener('click', ()=> fileInput.click())
-    fileInput.addEventListener('change', async (e)=>{
-      const file = e.target.files && e.target.files[0]
-      if(!file) return
-      try{
-        const text = await file.text()
-        let imported = []
-        if(file.name.toLowerCase().endsWith('.ics')){
-          imported = parseICS(text)
-        }else if(file.name.toLowerCase().endsWith('.csv')){
-          imported = parseCSV(text)
-        }else{
-          alert('Unsupported file. Please choose .ics or .csv')
-          return
+        if (events[key]?.length) {
+          const dot = document.createElement("div");
+          dot.className = "event-dot";
+          cell.appendChild(dot);
+          cell.onclick = () => showEventDetails(key);
+        } else {
+          cell.onclick = () => showEventForm(key);
         }
-        if(imported.length===0){
-          alert('No events found to import')
-          return
-        }
-        // append with new ids and colors
-        const withIds = imported.map(ev=>({
-          id: Date.now().toString(36)+Math.random().toString(36).slice(2,7),
-          title: ev.title || '(No title)',
-          desc: ev.desc || '',
-          dateKey: ev.dateKey,
-          time: ev.time || '',
-          color: randomColor()
-        }))
-        state.events = state.events.concat(withIds)
-        save();renderCalendar();renderEventsList()
-        alert(`Imported ${withIds.length} event(s)`) 
-      }catch(err){
-        console.error(err)
-        alert('Failed to import file')
-      }finally{
-        e.target.value = ''
+        daysGrid.appendChild(cell);
       }
-    })
 
-    function parseICS(text){
-      // Minimal iCalendar VEVENT parser
-      const lines = text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n')
-      const events = []
-      let cur = null
-      for(const raw of lines){
-        const line = raw.trim()
-        if(line === 'BEGIN:VEVENT') cur = {}
-        else if(line === 'END:VEVENT'){
-          if(cur && cur.DTSTART){
-            const {dateKey, time} = icsDateToParts(cur.DTSTART)
-            events.push({
-              title: cur.SUMMARY || '(No title)',
-              desc: cur.DESCRIPTION || '',
-              dateKey,
-              time
-            })
-          }
-          cur = null
-        }else if(cur){
-          const idx = line.indexOf(':')
-          if(idx>0){
-            const keyRaw = line.slice(0, idx)
-            const value = line.slice(idx+1)
-            const key = keyRaw.split(';')[0] // strip params
-            cur[key] = value
-          }
-        }
+      // Fill remaining cells if needed to maintain grid
+      const totalCells = rowCount * 7;
+      const filledCells = firstDay + daysInMonth;
+      for (let i = 1; i <= totalCells - filledCells; i++) {
+        const cell = createCell(i, "inactive");
+        daysGrid.appendChild(cell);
       }
-      return events
+
+      // Re-apply dynamic height after rendering
+      document.querySelectorAll('.day-cell').forEach(cell => {
+        cell.style.height = `${cellHeight}px`;
+      });
     }
 
-    function icsDateToParts(val){
-      // Supports YYYYMMDD or YYYYMMDDTHHMMSSZ
-      const v = val.replace(/Z$/,'')
-      let dateKey = ''
-      let time = ''
-      if(/^\d{8}$/.test(v)){
-        // all day
-        dateKey = v.slice(0,4)+'-'+v.slice(4,6)+'-'+v.slice(6,8)
-      }else if(/^\d{8}T\d{6}$/.test(v)){
-        dateKey = v.slice(0,4)+'-'+v.slice(4,6)+'-'+v.slice(6,8)
-        const hh = v.slice(9,11)
-        const mm = v.slice(11,13)
-        time = `${hh}:${mm}`
-      }else if(/^\d{8}T\d{4}$/.test(v)){
-        dateKey = v.slice(0,4)+'-'+v.slice(4,6)+'-'+v.slice(6,8)
-        const hh = v.slice(9,11)
-        const mm = v.slice(11,13)
-        time = `${hh}:${mm}`
-      }else{
-        // fallback: try Date parse
-        const d = new Date(val)
-        if(!isNaN(d.getTime())){
-          dateKey = d.toISOString().slice(0,10)
-          time = d.toTimeString().slice(0,5)
-        }
+    function createCell(day, className) {
+      const div = document.createElement("div");
+      div.className = `day-cell ${className}`;
+      const num = document.createElement("span");
+      num.className = "day-number";
+      num.textContent = day;
+      div.appendChild(num);
+      return div;
+    }
+
+    function changeMonth(x) {
+      currentMonth += x;
+      if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+      } else if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
       }
-      return {dateKey, time}
+      renderCalendar();
     }
 
-    function parseCSV(text){
-      // Simple CSV with headers: title,date,time,desc
-      const lines = text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n').filter(x=>x.trim().length>0)
-      if(lines.length===0) return []
-      const header = lines[0].split(',').map(h=>h.trim().toLowerCase())
-      const idx = {
-        title: header.indexOf('title'),
-        date: header.indexOf('date'),
-        time: header.indexOf('time'),
-        desc: header.indexOf('desc')>=0?header.indexOf('desc'):header.indexOf('description')
-      }
-      const out = []
-      for(let i=1;i<lines.length;i++){
-        const parts = splitCsvLine(lines[i])
-        const title = idx.title>=0 ? (parts[idx.title]||'').trim() : ''
-        const dateRaw = idx.date>=0 ? (parts[idx.date]||'').trim() : ''
-        const time = idx.time>=0 ? (parts[idx.time]||'').trim() : ''
-        const desc = idx.desc>=0 ? (parts[idx.desc]||'').trim() : ''
-        const dateKey = normalizeDateKey(dateRaw)
-        if(dateKey){ out.push({title, desc, dateKey, time}) }
-      }
-      return out
+    function showSelector(type) {
+      selectorList.innerHTML = "";
+      selectorTitle.textContent = type === "month" ? "Chọn tháng" : "Chọn năm";
+      const opts = type === "month" ? monthNames.map((n, i) => ({ n, i })) : [...Array(11)].map((_, i) => ({ n: currentYear - 5 + i, i: currentYear - 5 + i }));
+      opts.forEach(o => {
+        const b = document.createElement("button");
+        b.textContent = o.n;
+        b.onclick = () => {
+          if (type === "month") currentMonth = o.i;
+          else currentYear = o.i;
+          renderCalendar();
+          closeModal("selectorModal");
+        };
+        selectorList.appendChild(b);
+      });
+      selectorModal.style.display = "flex";
     }
 
-    function splitCsvLine(line){
-      const res = []
-      let cur = ''
-      let inQ = false
-      for(let i=0;i<line.length;i++){
-        const ch = line[i]
-        if(ch==='"'){
-          if(inQ && line[i+1]==='"'){cur+='"'; i++}
-          else inQ = !inQ
-        }else if(ch===',' && !inQ){
-          res.push(cur); cur=''
-        }else{
-          cur+=ch
-        }
-      }
-      res.push(cur)
-      return res
+    function closeModal(id) {
+      document.getElementById(id).style.display = "none";
     }
 
-    function normalizeDateKey(s){
-      // Accept YYYY-MM-DD or DD/MM/YYYY etc.
-      const t = s.trim()
-      if(/^\d{4}-\d{2}-\d{2}$/.test(t)) return t
-      const m = t.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{2,4})$/)
-      if(m){
-        const d = m[1].padStart(2,'0')
-        const mo = m[2].padStart(2,'0')
-        const y = m[3].length===2 ? ('20'+m[3]) : m[3]
-        // assume DD/MM/YYYY
-        return `${y}-${mo}-${d}`
-      }
-      // try Date()
-      const dt = new Date(t)
-      if(!isNaN(dt.getTime())) return dt.toISOString().slice(0,10)
-      return ''
+    function showEventForm(date) {
+      selectedDayForEvent = date;
+      eventDateDisplay.textContent = formatDisplayDate(date);
+      eventDayDateInput.value = date;
+      eventFormModal.style.display = "flex";
     }
 
-    // Utils
-    function randomColor(){
-      const palette = ['#7C5CFF','#3DD3C1','#FF6B6B','#FFD166','#5BC0EB','#9B5DE5']
-      return palette[Math.floor(Math.random()*palette.length)]
+    eventForm.onsubmit = e => {
+      e.preventDefault();
+      const title = document.getElementById("eventTitle").value;
+      const details = document.getElementById("eventDetails").value;
+      const date = eventDayDateInput.value;
+      const ev = loadEvents();
+      if (!ev[date]) ev[date] = [];
+      ev[date].push({ title, details });
+      saveEvents(ev);
+      renderCalendar();
+      closeModal("eventFormModal");
+    };
+
+    function showEventDetails(date) {
+      selectedDayForEvent = date;
+      const ev = getEventsForDate(date);
+      popupEventDate.textContent = formatDisplayDate(date);
+      eventDetailsContent.innerHTML = ev.length ? ev.map(e => `<b>${e.title}</b><p>${e.details || ""}</p><hr>`).join("") : "<p>Không có sự kiện</p>";
+      eventDetailsModal.style.display = "flex";
     }
 
-    // migrate old date format if needed
-    function normalizeEvents(){
-      state.events = (state.events||[]).map(e=>{
-        if(!e.dateKey){ // older format: store date as ISO
-          const d = new Date(e.date)
-          e.dateKey = d.toISOString().slice(0,10)
-        }
-        return e
-      })
+    function deleteEvent() {
+      if (!selectedDayForEvent) return;
+      const ev = loadEvents();
+      delete ev[selectedDayForEvent];
+      saveEvents(ev);
+      renderCalendar();
+      closeModal("eventDetailsModal");
     }
 
-    // init
-    load();normalizeEvents();renderWeekdays();renderCalendar();renderEventsList();
+    document.getElementById("prevMonthBtn").onclick = () => changeMonth(-1);
+    document.getElementById("nextMonthBtn").onclick = () => changeMonth(1);
+    monthSelectorBtn.onclick = () => showSelector("month");
+    yearSelectorBtn.onclick = () => showSelector("year");
+    document.getElementById("addEventBtn").onclick = () => showEventForm(formatDate(new Date()));
 
-    // expose to window for quick debugging
-    window.t2 = {state, save, load, renderCalendar}
-  })();
+    // Re-render on resize to adjust heights
+    window.addEventListener('resize', renderCalendar);
+
+    renderCalendar();
   </script>
-  
 </body>
 </html>
