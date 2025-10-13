@@ -432,18 +432,346 @@
 
 
     /* --- RESPONSIVE --- */
-    @media (max-width: 768px) {
-      body { padding: 0; }
+    /* Desktop Large (1200px+) */
+    @media (min-width: 1200px) {
+      .calendar-app {
+        max-width: 1400px;
+      }
+      .calendar-container {
+        padding: 32px;
+      }
+      .days-grid {
+        gap: 16px;
+      }
+      .day-cell {
+        min-height: 80px;
+      }
+    }
+
+    /* Desktop Medium (992px - 1199px) */
+    @media (max-width: 1199px) and (min-width: 992px) {
+      .calendar-app {
+        max-width: 1000px;
+      }
+      .days-grid {
+        gap: 14px;
+      }
+      .day-cell {
+        min-height: 70px;
+      }
+    }
+
+    /* Tablet Landscape (768px - 991px) */
+    @media (max-width: 991px) and (min-width: 768px) {
+      .calendar-app {
+        max-width: 900px;
+        height: calc(100vh - 20px);
+      }
+      .header {
+        padding: 16px 20px;
+      }
+      .calendar-container {
+        padding: 20px;
+      }
+      .days-grid {
+        gap: 10px;
+      }
+      .day-cell {
+        min-height: 60px;
+      }
+      .day-number {
+        font-size: 15px;
+      }
+      #calendarDisplay {
+        font-size: 18px;
+      }
+      .add-btn {
+        width: 56px;
+        height: 56px;
+        bottom: 30px;
+        right: 30px;
+      }
+    }
+
+    /* Tablet Portrait & Mobile Large (481px - 767px) */
+    @media (max-width: 767px) and (min-width: 481px) {
+      body { 
+        padding: 8px; 
+      }
+      .calendar-app { 
+        height: calc(100vh - 16px); 
+        max-height: none;
+        border-radius: var(--radius-md); 
+      }
+      .header { 
+        flex-direction: column;
+        gap: 12px; 
+        padding: 16px; 
+        text-align: center;
+      }
+      .nav-buttons {
+        order: 2;
+      }
+      #calendarDisplay { 
+        order: 1; 
+        font-size: 20px; 
+        margin-bottom: 0;
+      }
+      .date-selector {
+        order: 3;
+      }
+      .calendar-container { 
+        padding: 16px; 
+      }
+      .days-grid { 
+        gap: 8px; 
+      }
+      .day-cell {
+        min-height: 50px;
+      }
+      .day-number {
+        font-size: 14px;
+        width: 28px;
+        height: 28px;
+      }
+      .weekdays {
+        font-size: 13px;
+        margin-bottom: 10px;
+      }
+      .add-btn { 
+        width: 50px; 
+        height: 50px; 
+        bottom: 24px; 
+        right: 24px; 
+      }
+      .modal-content {
+        width: min(400px, 95vw);
+        padding: 20px;
+      }
+    }
+
+    /* Mobile Portrait (320px - 480px) */
+    @media (max-width: 480px) {
+      body { 
+        padding: 0; 
+      }
       .calendar-app { 
         height: 100vh; 
         max-height: none;
         border-radius: 0; 
       }
-      .header { flex-wrap: wrap; justify-content: center; gap: 10px; padding: 12px 16px; }
-      #calendarDisplay { order: -1; width: 100%; margin-bottom: 10px; font-size: 18px; }
-      .calendar-container { padding: 16px; }
-      .days-grid { gap: 8px; }
-      .add-btn { width: 52px; height: 52px; bottom: 20px; right: 20px; }
+      .header { 
+        flex-direction: column;
+        gap: 10px; 
+        padding: 12px 16px; 
+        text-align: center;
+      }
+      .nav-buttons {
+        order: 2;
+      }
+      #calendarDisplay { 
+        order: 1; 
+        font-size: 18px; 
+        margin-bottom: 0;
+      }
+      .date-selector {
+        order: 3;
+      }
+      .date-selector button {
+        padding: 6px 12px;
+        font-size: 14px;
+      }
+      .icon-btn {
+        width: 36px;
+        height: 36px;
+      }
+      .icon-btn svg {
+        width: 18px;
+        height: 18px;
+      }
+      .calendar-container { 
+        padding: 12px; 
+      }
+      .weekdays {
+        font-size: 12px;
+        margin-bottom: 8px;
+      }
+      .days-grid { 
+        gap: 6px; 
+      }
+      .day-cell {
+        min-height: 45px;
+      }
+      .day-number {
+        font-size: 13px;
+        width: 26px;
+        height: 26px;
+      }
+      .event-dot {
+        width: 5px;
+        height: 5px;
+        bottom: 8px;
+      }
+      .add-btn { 
+        width: 48px; 
+        height: 48px; 
+        bottom: 16px; 
+        right: 16px; 
+      }
+      .add-btn svg {
+        width: 24px;
+        height: 24px;
+      }
+      .modal {
+        padding: 10px;
+      }
+      .modal-content {
+        width: min(350px, 98vw);
+        padding: 16px;
+        border-radius: var(--radius-md);
+      }
+      .modal-content h3 {
+        font-size: 18px;
+        margin-bottom: 16px;
+      }
+      input, textarea {
+        padding: 10px 12px;
+        font-size: 15px;
+        margin-bottom: 10px;
+      }
+      .modal-btn {
+        padding: 10px;
+        font-size: 14px;
+      }
+    }
+
+    /* Extra Small Mobile (max 319px) */
+    @media (max-width: 319px) {
+      .header {
+        padding: 10px 12px;
+      }
+      #calendarDisplay {
+        font-size: 16px;
+      }
+      .calendar-container {
+        padding: 8px;
+      }
+      .days-grid {
+        gap: 4px;
+      }
+      .day-cell {
+        min-height: 40px;
+      }
+      .day-number {
+        font-size: 12px;
+        width: 24px;
+        height: 24px;
+      }
+      .weekdays {
+        font-size: 11px;
+      }
+      .add-btn {
+        width: 44px;
+        height: 44px;
+        bottom: 12px;
+        right: 12px;
+      }
+      .modal-content {
+        width: min(300px, 96vw);
+        padding: 12px;
+      }
+    }
+
+    /* Landscape orientation adjustments */
+    @media (max-height: 500px) and (orientation: landscape) {
+      .calendar-app {
+        height: calc(100vh - 10px);
+      }
+      .header {
+        padding: 8px 16px;
+      }
+      .calendar-container {
+        padding: 8px 16px;
+      }
+      .days-grid {
+        gap: 4px;
+      }
+      .day-cell {
+        min-height: 35px;
+      }
+      .day-number {
+        font-size: 12px;
+        width: 22px;
+        height: 22px;
+      }
+      .weekdays {
+        font-size: 11px;
+        margin-bottom: 6px;
+      }
+      .add-btn {
+        width: 40px;
+        height: 40px;
+        bottom: 10px;
+        right: 10px;
+      }
+    }
+
+    /* High DPI displays */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      .event-dot {
+        box-shadow: 0 0 6px var(--primary-light);
+      }
+      .day-cell.current-day .day-number {
+        box-shadow: 0 0 12px rgba(138, 92, 246, 0.4);
+      }
+    }
+
+    /* Touch device optimizations */
+    @media (hover: none) and (pointer: coarse) {
+      .day-cell:hover {
+        transform: none;
+      }
+      .day-cell:active {
+        transform: scale(0.95);
+        background: rgba(255, 255, 255, 0.2);
+      }
+      .icon-btn:hover, .date-selector button:hover {
+        transform: none;
+      }
+      .icon-btn:active, .date-selector button:active {
+        transform: scale(0.95);
+      }
+      .add-btn:hover {
+        transform: none;
+      }
+      .add-btn:active {
+        transform: scale(0.95);
+      }
+      .modal-btn:hover {
+        transform: none;
+      }
+      .modal-btn:active {
+        transform: scale(0.98);
+      }
+    }
+
+    /* Accessibility improvements for larger text */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* Dark mode support */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f172a;
+        --text: #f1f5f9;
+        --text-dark: #f8fafc;
+        --text-muted: #64748b;
+      }
     }
   </style>
 </head>
