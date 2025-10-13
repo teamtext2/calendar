@@ -14,155 +14,187 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <style>
     :root {
-      --primary: #007aff;
-      --primary-light: #66b0ff;
+      --primary: #8a5cf6; /* A modern, vibrant purple */
+      --primary-light: #a78bfa;
       --white: #ffffff;
       --bg: #f7f9fc;
-      --text: #1c2526;
-      --glass-bg: rgba(255, 255, 255, 0.3);
-      --glass-border: rgba(255, 255, 255, 0.5);
-      --shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-      --shadow-deep: 0 6px 20px rgba(0, 0, 0, 0.15), inset 0 -2px 4px rgba(255, 255, 255, 0.2);
-      --radius: 24px;
+      --text: #e5e7eb; /* Lighter text for dark bg contrast */
+      --text-dark: #1f2937;
+      --text-muted: #9ca3af;
+      --glass-bg: rgba(255, 255, 255, 0.1);
+      --glass-border: rgba(255, 255, 255, 0.2);
+      --glass-highlight: rgba(255, 255, 255, 0.05);
+      --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
       --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
 
     * {
       box-sizing: border-box;
-      font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       margin: 0;
       padding: 0;
+      -webkit-tap-highlight-color: transparent;
     }
 
+    /* --- BACKGROUND --- */
     body {
-      background: linear-gradient(180deg, #e5efff, #d4e2ff);
+      background: #111827; /* Dark background to make glass pop */
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      height: 100vh;
-      padding: 0;
+      padding: 16px;
       overflow: hidden;
+      position: relative;
+    }
+    
+    /* Animated Gradient Blobs */
+    body::before, body::after {
+        content: '';
+        position: absolute;
+        width: 400px;
+        height: 400px;
+        border-radius: 50%;
+        filter: blur(100px);
+        z-index: -1;
     }
 
+    body::before {
+        background: linear-gradient(135deg, var(--primary), #ec4899);
+        top: 10%;
+        left: 10%;
+        animation: move-blob-1 15s infinite alternate;
+    }
+
+    body::after {
+        background: linear-gradient(135deg, #22d3ee, #3b82f6);
+        bottom: 10%;
+        right: 10%;
+        animation: move-blob-2 15s infinite alternate;
+    }
+
+    @keyframes move-blob-1 {
+      from { transform: translate(-20%, -20%) rotate(0deg); }
+      to { transform: translate(20%, 20%) rotate(360deg); }
+    }
+
+    @keyframes move-blob-2 {
+      from { transform: translate(20%, 20%) rotate(0deg); }
+      to { transform: translate(-20%, -20%) rotate(360deg); }
+    }
+
+
+    /* --- MAIN APP CONTAINER --- */
     .calendar-app {
       width: 100%;
-      max-width: 1000px;
-      height: 100vh;
+      max-width: 1200px;
+      height: calc(100vh - 32px);
+      max-height: 800px;
       background: var(--glass-bg);
-      backdrop-filter: blur(12px);
-      border-radius: var(--radius);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: var(--radius-lg);
       box-shadow: var(--shadow);
-      overflow: hidden;
       border: 1px solid var(--glass-border);
       display: flex;
       flex-direction: column;
+      overflow: hidden;
     }
 
-    /* HEADER */
+    /* --- HEADER --- */
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 16px 20px;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.2));
-      backdrop-filter: blur(8px);
+      padding: 16px 24px;
+      background: var(--glass-highlight);
       border-bottom: 1px solid var(--glass-border);
       flex-shrink: 0;
     }
 
-    .nav-buttons button {
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      border-radius: 12px;
-      width: 44px;
-      height: 44px;
-      font-size: 20px;
-      color: var(--primary);
-      box-shadow: var(--shadow-deep);
-      cursor: pointer;
-      transition: var(--transition);
+    .nav-buttons, .date-selector {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
-    .nav-buttons button:hover {
+    .icon-btn, .date-selector button {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+    }
+    
+    .icon-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .icon-btn:hover, .date-selector button:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.4);
       transform: translateY(-2px);
-      background: var(--primary-light);
-      color: var(--white);
-      box-shadow: 0 8px 24px rgba(0, 122, 255, 0.3);
     }
 
     .date-selector button {
-      background: transparent;
-      border: none;
-      color: var(--primary);
-      font-weight: 600;
+      padding: 8px 16px;
+      font-weight: 500;
       font-size: 16px;
-      margin: 0 8px;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .date-selector button:hover {
-      color: #0051cc;
-    }
-
-    .menu-dots {
-      font-size: 28px;
-      color: var(--text);
-      cursor: pointer;
-      padding: 4px 8px;
-      border-radius: 12px;
-      transition: var(--transition);
-    }
-
-    .menu-dots:hover {
-      background: var(--glass-bg);
-      box-shadow: var(--shadow);
-    }
-
-    /* CALENDAR */
-    .calendar-container {
-      background: transparent;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      overflow: hidden;
     }
 
     #calendarDisplay {
       text-align: center;
       font-weight: 600;
-      font-size: 18px;
-      margin-bottom: 12px;
-      flex-shrink: 0;
+      font-size: 20px;
+      color: var(--white);
+      flex-grow: 1;
+    }
+
+    /* --- CALENDAR --- */
+    .calendar-container {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden;
     }
 
     .weekdays {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
       text-align: center;
-      color: #5c6b73;
-      font-weight: 600;
+      color: var(--text-muted);
+      font-weight: 500;
       font-size: 14px;
       margin-bottom: 12px;
-      flex-shrink: 0;
     }
 
     .days-grid {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
-      gap: 10px;
+      grid-template-rows: repeat(6, 1fr);
+      gap: 12px;
       flex: 1;
       min-height: 0;
     }
 
     .day-cell {
-      background: var(--glass-bg);
-      backdrop-filter: blur(8px);
-      border: 1px solid var(--glass-border);
-      border-radius: 16px;
-      box-shadow: var(--shadow);
+      background: var(--glass-highlight);
+      border: 1px solid transparent;
+      border-radius: var(--radius-md);
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -170,217 +202,271 @@
       cursor: pointer;
       transition: var(--transition);
       position: relative;
+      color: var(--text);
     }
 
     .day-cell:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 20px rgba(0, 122, 255, 0.2);
+      transform: scale(1.05);
+      border-color: var(--glass-border);
+      background: rgba(255, 255, 255, 0.15);
     }
-
+    
     .day-cell.inactive {
-      color: #8e9ba3;
-      background: rgba(255, 255, 255, 0.1);
-      box-shadow: none;
+        color: var(--text-muted);
+        background: transparent;
+        pointer-events: none;
     }
 
     .day-number {
       font-size: 16px;
-      font-weight: 600;
-      color: var(--text);
+      font-weight: 500;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: var(--transition);
+    }
+    
+    .day-cell:hover .day-number {
+        color: var(--white);
     }
 
-    .current-day {
-      background: var(--primary);
+    .day-cell .current-day {
+      background-color: var(--primary);
       color: var(--white);
-      border-radius: 50%;
-      padding: 10px 14px;
-      font-weight: bold;
-      box-shadow: 0 0 10px rgba(0, 122, 255, 0.5);
+      font-weight: 700;
+      box-shadow: 0 0 15px rgba(138, 92, 246, 0.5);
     }
 
     .event-dot {
       position: absolute;
       bottom: 10px;
-      width: 8px;
-      height: 8px;
-      background: #ff3b30;
+      width: 6px;
+      height: 6px;
+      background: var(--primary-light);
       border-radius: 50%;
-      box-shadow: 0 0 6px rgba(255, 59, 48, 0.5);
+      box-shadow: 0 0 8px var(--primary-light);
     }
-
-    /* ADD BUTTON */
+    
+    /* --- ADD BUTTON --- */
     .add-btn {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      background: linear-gradient(135deg, #007aff, #0051cc);
+      position: absolute;
+      bottom: 40px;
+      right: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
       color: var(--white);
       border: none;
       border-radius: 50%;
       width: 60px;
       height: 60px;
-      font-size: 30px;
       cursor: pointer;
-      box-shadow: var(--shadow-deep), 0 0 12px rgba(0, 122, 255, 0.4);
+      box-shadow: 0 8px 25px rgba(138, 92, 246, 0.4);
       transition: var(--transition);
       z-index: 50;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .add-btn:hover {
-      transform: scale(1.1);
-      box-shadow: 0 10px 30px rgba(0, 122, 255, 0.5);
-      filter: brightness(1.2);
+      transform: scale(1.1) rotate(90deg);
+      box-shadow: 0 12px 30px rgba(138, 92, 246, 0.6);
     }
 
-    /* MODALS */
+    /* --- MODALS --- */
     .modal {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(17, 24, 39, 0.5);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       display: none;
       justify-content: center;
       align-items: center;
       z-index: 100;
       padding: 20px;
-      overflow: auto;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .modal.show {
+        display: flex;
+        opacity: 1;
     }
 
     .modal-content {
       background: var(--glass-bg);
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
       border: 1px solid var(--glass-border);
-      border-radius: var(--radius);
+      border-radius: var(--radius-lg);
       box-shadow: var(--shadow);
       padding: 24px;
       width: min(450px, 90vw);
       max-height: 80vh;
       overflow-y: auto;
-      animation: slideIn 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      color: var(--text);
+      transform: scale(0.95);
+      transition: transform 0.3s ease;
     }
-
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+    
+    .modal.show .modal-content {
+        transform: scale(1);
     }
 
     .modal-content h3 {
-      color: var(--primary);
-      margin-bottom: 16px;
+      color: var(--white);
+      margin-bottom: 20px;
       font-size: 20px;
       font-weight: 600;
+      text-align: center;
     }
 
     input, textarea {
       width: 100%;
-      background: rgba(255, 255, 255, 0.4);
+      background: rgba(17, 24, 39, 0.5);
       border: 1px solid var(--glass-border);
-      border-radius: 12px;
-      padding: 12px;
-      font-size: 14px;
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-size: 16px;
       margin-bottom: 12px;
       transition: var(--transition);
+      color: var(--text);
+    }
+    
+    input::placeholder, textarea::placeholder {
+        color: var(--text-muted);
     }
 
     input:focus, textarea:focus {
-      background: rgba(255, 255, 255, 0.6);
+      background: rgba(17, 24, 39, 0.7);
       border-color: var(--primary);
       outline: none;
+      box-shadow: 0 0 10px rgba(138, 92, 246, 0.3);
     }
 
-    .event-form button,
-    .modal-content button {
-      width: 100%;
-      background: var(--primary);
-      color: var(--white);
-      border: none;
+    .modal-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 16px;
+    }
+
+    .modal-btn {
+      flex: 1;
       padding: 12px;
-      border-radius: 12px;
+      border-radius: var(--radius-sm);
       font-weight: 600;
       font-size: 16px;
       cursor: pointer;
       transition: var(--transition);
-      box-shadow: var(--shadow-deep);
-      margin-top: 8px;
+      border: none;
     }
 
-    .event-form button:hover,
-    .modal-content button:hover {
+    .btn-primary {
+      background: var(--primary);
+      color: var(--white);
+      box-shadow: 0 4px 15px rgba(138, 92, 246, 0.3);
+    }
+    .btn-primary:hover {
+      background: var(--primary-light);
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0, 122, 255, 0.3);
-      filter: brightness(1.1);
+      box-shadow: 0 6px 20px rgba(138, 92, 246, 0.4);
+    }
+    
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--white);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .btn-danger {
+        background: #ef4444;
+        color: var(--white);
+    }
+    .btn-danger:hover {
+        background: #f87171;
+    }
+    
+    #selectorList {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+        gap: 10px;
+    }
+    
+    #selectorList button {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        color: var(--text);
+        padding: 10px;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition: var(--transition);
+    }
+    #selectorList button:hover {
+        background: var(--primary);
+        color: var(--white);
+    }
+    
+    #eventDetailsContent b {
+        color: var(--primary-light);
+        display: block;
+        font-size: 1.1em;
+    }
+    #eventDetailsContent p {
+        margin: 4px 0 12px;
+        line-height: 1.6;
+    }
+    #eventDetailsContent hr {
+        border: none;
+        height: 1px;
+        background-color: var(--glass-border);
+        margin-bottom: 12px;
     }
 
-    .modal-content button[style*="background: #ccc"] {
-      background: rgba(255, 255, 255, 0.4);
-      color: var(--text);
-      box-shadow: var(--shadow);
-    }
 
-    .modal-content button[style*="background: #ff3b30"] {
-      background: #ff3b30;
-      box-shadow: var(--shadow);
-    }
-
-    /* Responsive Optimizations */
+    /* --- RESPONSIVE --- */
     @media (max-width: 768px) {
       body { padding: 0; }
-      .calendar-app { max-width: 100%; height: 100vh; border-radius: 0; }
-      .header { padding: 12px 16px; }
-      .calendar-container { padding: 16px; }
-      .weekdays span { font-size: 12px; }
-      .days-grid { gap: 8px; }
-      .day-number { font-size: 14px; }
-      .add-btn { width: 52px; height: 52px; font-size: 26px; bottom: 20px; right: 20px; }
-      .nav-buttons button { width: 40px; height: 40px; font-size: 18px; }
-      .date-selector button { font-size: 14px; margin: 0 6px; }
-      #calendarDisplay { font-size: 16px; }
-    }
-
-    @media (max-width: 480px) {
-      .calendar-app { max-width: 100%; }
-      .add-btn { width: 48px; height: 48px; font-size: 24px; bottom: 16px; right: 16px; }
-      .modal-content { padding: 16px; width: 95vw; }
-      input, textarea { font-size: 12px; padding: 10px; }
-      .event-form button, .modal-content button { padding: 10px; font-size: 14px; }
-      .modal-content h3 { font-size: 18px; }
-      .weekdays span { font-size: 10px; }
-      .day-number { font-size: 12px; }
-      .event-dot { bottom: 6px; width: 6px; height: 6px; }
-    }
-
-    /* Dynamic Height Adjustment for Day Cells */
-    .days-grid > .day-cell {
-      height: calc((100% - 40px) / 6); /* Assume max 6 rows, adjust gap */
-    }
-
-    @media (max-height: 600px) {
-      .days-grid > .day-cell {
-        height: calc((100% - 30px) / 6);
+      .calendar-app { 
+        height: 100vh; 
+        max-height: none;
+        border-radius: 0; 
       }
-      .calendar-container { padding: 10px; }
-      .header { padding: 10px 12px; }
+      .header { flex-wrap: wrap; justify-content: center; gap: 10px; padding: 12px 16px; }
+      #calendarDisplay { order: -1; width: 100%; margin-bottom: 10px; font-size: 18px; }
+      .calendar-container { padding: 16px; }
+      .days-grid { gap: 8px; }
+      .add-btn { width: 52px; height: 52px; bottom: 20px; right: 20px; }
     }
   </style>
 </head>
 <body>
+
   <div class="calendar-app">
     <div class="header">
       <div class="nav-buttons">
-        <button id="prevMonthBtn">⟵</button>
-        <button id="nextMonthBtn">⟶</button>
+        <button id="prevMonthBtn" class="icon-btn" aria-label="Tháng trước">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+        </button>
+        <button id="nextMonthBtn" class="icon-btn" aria-label="Tháng sau">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+        </button>
       </div>
+      <div id="calendarDisplay"></div>
       <div class="date-selector">
         <button id="monthSelector">Tháng</button>
         <button id="yearSelector">Năm</button>
       </div>
-      <div class="menu-dots">⋮</div>
     </div>
 
     <div class="calendar-container">
-      <div id="calendarDisplay"></div>
       <div class="weekdays">
         <span>CN</span><span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span>
       </div>
@@ -388,27 +474,33 @@
     </div>
   </div>
 
-  <button id="addEventBtn" class="add-btn">+</button>
+  <button id="addEventBtn" class="add-btn" aria-label="Thêm sự kiện">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 28px; height: 28px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+  </button>
 
   <!-- Modals -->
   <div id="selectorModal" class="modal">
     <div class="modal-content">
       <h3 id="selectorTitle">Chọn...</h3>
       <div id="selectorList"></div>
-      <button onclick="closeModal('selectorModal')" style="background:#ccc;">Đóng</button>
+      <div class="modal-actions">
+          <button onclick="closeModal('selectorModal')" class="modal-btn btn-secondary">Đóng</button>
+      </div>
     </div>
   </div>
 
   <div id="eventFormModal" class="modal">
     <div class="modal-content">
       <h3>Thêm sự kiện cho <span id="eventDateDisplay"></span></h3>
-      <form id="eventForm" class="event-form">
+      <form id="eventForm">
         <input type="hidden" id="eventDayDate">
         <input type="text" id="eventTitle" placeholder="Tên sự kiện" required>
-        <textarea id="eventDetails" placeholder="Chi tiết (tùy chọn)"></textarea>
-        <button type="submit">Lưu</button>
+        <textarea id="eventDetails" placeholder="Chi tiết (tùy chọn)" rows="3"></textarea>
+        <div class="modal-actions">
+            <button type="button" onclick="closeModal('eventFormModal')" class="modal-btn btn-secondary">Hủy</button>
+            <button type="submit" class="modal-btn btn-primary">Lưu</button>
+        </div>
       </form>
-      <button onclick="closeModal('eventFormModal')" style="background:#ccc;">Đóng</button>
     </div>
   </div>
 
@@ -416,8 +508,10 @@
     <div class="modal-content">
       <h3>Sự kiện ngày <span id="popupEventDate"></span></h3>
       <div id="eventDetailsContent"></div>
-      <button onclick="deleteEvent()" style="background:#ff3b30;">Xóa</button>
-      <button onclick="closeModal('eventDetailsModal')" style="background:#ccc;">Đóng</button>
+      <div class="modal-actions">
+        <button onclick="closeModal('eventDetailsModal')" class="modal-btn btn-secondary">Đóng</button>
+        <button onclick="deleteEvent()" class="modal-btn btn-danger">Xóa</button>
+      </div>
     </div>
   </div>
 
@@ -427,11 +521,14 @@
     const daysGrid = document.getElementById("daysGrid");
     const monthSelectorBtn = document.getElementById("monthSelector");
     const yearSelectorBtn = document.getElementById("yearSelector");
+    
     const selectorModal = document.getElementById("selectorModal");
     const selectorTitle = document.getElementById("selectorTitle");
     const selectorList = document.getElementById("selectorList");
+    
     const eventFormModal = document.getElementById("eventFormModal");
     const eventDetailsModal = document.getElementById("eventDetailsModal");
+    
     const popupEventDate = document.getElementById("popupEventDate");
     const eventDetailsContent = document.getElementById("eventDetailsContent");
     const eventForm = document.getElementById("eventForm");
@@ -451,10 +548,6 @@
       localStorage.setItem("calendarEvents", JSON.stringify(e));
     }
 
-    function getEventsForDate(d) {
-      return loadEvents()[d] || [];
-    }
-
     function formatDate(d) {
       return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
     }
@@ -465,63 +558,53 @@
     }
 
     function renderCalendar() {
-      const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+      const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
+      const firstDay = firstDayOfMonth.getDay();
       const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-      const daysInPrevMonth = new Date(currentYear, currentMonth, 0).getDate();
+      
       daysGrid.innerHTML = "";
       calendarDisplay.textContent = `${monthNames[currentMonth]} ${currentYear}`;
       monthSelectorBtn.textContent = monthNames[currentMonth];
       yearSelectorBtn.textContent = currentYear;
 
-      let rowCount = Math.ceil((firstDay + daysInMonth) / 7);
+      const daysInPrevMonth = new Date(currentYear, currentMonth, 0).getDate();
 
-      // Adjust day-cell height dynamically based on row count
-      const gridHeight = daysGrid.clientHeight;
-      const gapTotal = (rowCount - 1) * 10; // gap is 10px
-      const cellHeight = (gridHeight - gapTotal) / rowCount;
-      document.querySelectorAll('.day-cell').forEach(cell => {
-        cell.style.height = `${cellHeight}px`;
-      });
-
-      for (let i = firstDay - 1; i >= 0; i--) {
-        const prev = daysInPrevMonth - i;
-        const cell = createCell(prev, "inactive");
-        daysGrid.appendChild(cell);
+      // Previous month's days
+      for (let i = firstDay; i > 0; i--) {
+        const day = daysInPrevMonth - i + 1;
+        daysGrid.appendChild(createCell(day, "inactive"));
       }
 
       const today = new Date();
       const events = loadEvents();
+      // Current month's days
       for (let d = 1; d <= daysInMonth; d++) {
         const date = new Date(currentYear, currentMonth, d);
         const key = formatDate(date);
         const cell = createCell(d, "");
+
         if (today.toDateString() === date.toDateString()) {
           const span = cell.querySelector(".day-number");
           span.classList.add("current-day");
         }
+        
         if (events[key]?.length) {
           const dot = document.createElement("div");
           dot.className = "event-dot";
           cell.appendChild(dot);
-          cell.onclick = () => showEventDetails(key);
+          cell.onclick = (e) => { e.stopPropagation(); showEventDetails(key); };
         } else {
-          cell.onclick = () => showEventForm(key);
+          cell.onclick = (e) => { e.stopPropagation(); showEventForm(key); };
         }
         daysGrid.appendChild(cell);
       }
-
-      // Fill remaining cells if needed to maintain grid
-      const totalCells = rowCount * 7;
+      
+      // Next month's days
+      const totalCells = 42; // 6 rows * 7 columns
       const filledCells = firstDay + daysInMonth;
       for (let i = 1; i <= totalCells - filledCells; i++) {
-        const cell = createCell(i, "inactive");
-        daysGrid.appendChild(cell);
+        daysGrid.appendChild(createCell(i, "inactive"));
       }
-
-      // Re-apply dynamic height after rendering
-      document.querySelectorAll('.day-cell').forEach(cell => {
-        cell.style.height = `${cellHeight}px`;
-      });
     }
 
     function createCell(day, className) {
@@ -545,11 +628,22 @@
       }
       renderCalendar();
     }
+    
+    function showModal(id) {
+        document.getElementById(id).classList.add('show');
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('show');
+    }
 
     function showSelector(type) {
       selectorList.innerHTML = "";
       selectorTitle.textContent = type === "month" ? "Chọn tháng" : "Chọn năm";
-      const opts = type === "month" ? monthNames.map((n, i) => ({ n, i })) : [...Array(11)].map((_, i) => ({ n: currentYear - 5 + i, i: currentYear - 5 + i }));
+      const opts = type === "month" 
+        ? monthNames.map((n, i) => ({ n, i })) 
+        : [...Array(11)].map((_, i) => ({ n: currentYear - 5 + i, i: currentYear - 5 + i }));
+
       opts.forEach(o => {
         const b = document.createElement("button");
         b.textContent = o.n;
@@ -561,18 +655,16 @@
         };
         selectorList.appendChild(b);
       });
-      selectorModal.style.display = "flex";
-    }
-
-    function closeModal(id) {
-      document.getElementById(id).style.display = "none";
+      showModal("selectorModal");
     }
 
     function showEventForm(date) {
       selectedDayForEvent = date;
       eventDateDisplay.textContent = formatDisplayDate(date);
       eventDayDateInput.value = date;
-      eventFormModal.style.display = "flex";
+      eventForm.reset();
+      showModal("eventFormModal");
+      document.getElementById("eventTitle").focus();
     }
 
     eventForm.onsubmit = e => {
@@ -580,6 +672,7 @@
       const title = document.getElementById("eventTitle").value;
       const details = document.getElementById("eventDetails").value;
       const date = eventDayDateInput.value;
+      if (!title) return;
       const ev = loadEvents();
       if (!ev[date]) ev[date] = [];
       ev[date].push({ title, details });
@@ -590,10 +683,10 @@
 
     function showEventDetails(date) {
       selectedDayForEvent = date;
-      const ev = getEventsForDate(date);
+      const ev = loadEvents()[date] || [];
       popupEventDate.textContent = formatDisplayDate(date);
-      eventDetailsContent.innerHTML = ev.length ? ev.map(e => `<b>${e.title}</b><p>${e.details || ""}</p><hr>`).join("") : "<p>Không có sự kiện</p>";
-      eventDetailsModal.style.display = "flex";
+      eventDetailsContent.innerHTML = ev.length ? ev.map(e => `<div><b>${e.title}</b><p>${e.details || "Không có chi tiết"}</p></div><hr>`).join("") : "<p>Không có sự kiện</p>";
+      showModal("eventDetailsModal");
     }
 
     function deleteEvent() {
@@ -604,15 +697,20 @@
       renderCalendar();
       closeModal("eventDetailsModal");
     }
-
+    
+    // --- Event Listeners ---
     document.getElementById("prevMonthBtn").onclick = () => changeMonth(-1);
     document.getElementById("nextMonthBtn").onclick = () => changeMonth(1);
     monthSelectorBtn.onclick = () => showSelector("month");
     yearSelectorBtn.onclick = () => showSelector("year");
     document.getElementById("addEventBtn").onclick = () => showEventForm(formatDate(new Date()));
-
-    // Re-render on resize to adjust heights
-    window.addEventListener('resize', renderCalendar);
+    
+    // Close modal on outside click
+    window.addEventListener('click', (e) => {
+        if (e.target.classList.contains('modal')) {
+            closeModal(e.target.id);
+        }
+    });
 
     renderCalendar();
   </script>
