@@ -8,27 +8,31 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="manifest" href="/site.webmanifest">
-  <meta name="theme-color" content="#F5F5F5">
+  <meta name="theme-color" content="#2563eb">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <style>
     :root {
-      --primary: #8a5cf6; /* A modern, vibrant purple */
-      --primary-light: #a78bfa;
+      --primary: #2563eb; /* Professional blue */
+      --primary-light: #3b82f6;
+      --primary-dark: #1d4ed8;
       --white: #ffffff;
-      --bg: #f7f9fc;
-      --text: #e5e7eb; /* Lighter text for dark bg contrast */
-      --text-dark: #1f2937;
-      --text-muted: #9ca3af;
-      --glass-bg: rgba(255, 255, 255, 0.1);
-      --glass-border: rgba(255, 255, 255, 0.2);
-      --glass-highlight: rgba(255, 255, 255, 0.05);
-      --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
-      --radius-lg: 24px;
-      --radius-md: 16px;
-      --radius-sm: 12px;
-      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      --black: #000000;
+      --bg: #ffffff;
+      --bg-secondary: #f8fafc;
+      --text: #1f2937;
+      --text-dark: #111827;
+      --text-muted: #6b7280;
+      --text-light: #9ca3af;
+      --border: #e5e7eb;
+      --border-light: #f3f4f6;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --transition: all 0.2s ease-in-out;
     }
 
     * {
@@ -41,7 +45,7 @@
 
     /* --- BACKGROUND --- */
     body {
-      background: #111827; /* Dark background to make glass pop */
+      background: var(--bg);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -51,39 +55,18 @@
       position: relative;
     }
     
-    /* Animated Gradient Blobs */
-    body::before, body::after {
+    /* Subtle pattern background */
+    body::before {
         content: '';
         position: absolute;
-        width: 400px;
-        height: 400px;
-        border-radius: 50%;
-        filter: blur(100px);
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: 
+          radial-gradient(circle at 25% 25%, rgba(37, 99, 235, 0.05) 0%, transparent 50%),
+          radial-gradient(circle at 75% 75%, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
         z-index: -1;
-    }
-
-    body::before {
-        background: linear-gradient(135deg, var(--primary), #ec4899);
-        top: 10%;
-        left: 10%;
-        animation: move-blob-1 15s infinite alternate;
-    }
-
-    body::after {
-        background: linear-gradient(135deg, #22d3ee, #3b82f6);
-        bottom: 10%;
-        right: 10%;
-        animation: move-blob-2 15s infinite alternate;
-    }
-
-    @keyframes move-blob-1 {
-      from { transform: translate(-20%, -20%) rotate(0deg); }
-      to { transform: translate(20%, 20%) rotate(360deg); }
-    }
-
-    @keyframes move-blob-2 {
-      from { transform: translate(20%, 20%) rotate(0deg); }
-      to { transform: translate(-20%, -20%) rotate(360deg); }
     }
 
 
@@ -93,12 +76,10 @@
       max-width: 1200px;
       height: calc(100vh - 32px);
       max-height: 800px;
-      background: var(--glass-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      background: var(--white);
       border-radius: var(--radius-lg);
-      box-shadow: var(--shadow);
-      border: 1px solid var(--glass-border);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -110,8 +91,8 @@
       justify-content: space-between;
       align-items: center;
       padding: 16px 24px;
-      background: var(--glass-highlight);
-      border-bottom: 1px solid var(--glass-border);
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
       flex-shrink: 0;
     }
 
@@ -122,8 +103,8 @@
     }
 
     .icon-btn, .date-selector button {
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
+      background: var(--white);
+      border: 1px solid var(--border);
       border-radius: var(--radius-sm);
       color: var(--text);
       cursor: pointer;
@@ -144,9 +125,11 @@
     }
 
     .icon-btn:hover, .date-selector button:hover {
-      background: rgba(255, 255, 255, 0.2);
-      border-color: rgba(255, 255, 255, 0.4);
-      transform: translateY(-2px);
+      background: var(--primary);
+      border-color: var(--primary);
+      color: var(--white);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow);
     }
 
     .date-selector button {
@@ -159,7 +142,7 @@
       text-align: center;
       font-weight: 600;
       font-size: 20px;
-      color: var(--white);
+      color: var(--text-dark);
       flex-grow: 1;
     }
 
@@ -177,9 +160,11 @@
       grid-template-columns: repeat(7, 1fr);
       text-align: center;
       color: var(--text-muted);
-      font-weight: 500;
+      font-weight: 600;
       font-size: 14px;
       margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .days-grid {
@@ -192,8 +177,8 @@
     }
 
     .day-cell {
-      background: var(--glass-highlight);
-      border: 1px solid transparent;
+      background: var(--white);
+      border: 1px solid var(--border-light);
       border-radius: var(--radius-md);
       display: flex;
       flex-direction: column;
@@ -206,15 +191,17 @@
     }
 
     .day-cell:hover {
-      transform: scale(1.05);
-      border-color: var(--glass-border);
-      background: rgba(255, 255, 255, 0.15);
+      transform: scale(1.02);
+      border-color: var(--primary);
+      background: var(--bg-secondary);
+      box-shadow: var(--shadow);
     }
     
     .day-cell.inactive {
-        color: var(--text-muted);
-        background: transparent;
+        color: var(--text-light);
+        background: var(--bg-secondary);
         pointer-events: none;
+        opacity: 0.5;
     }
 
     .day-number {
@@ -230,24 +217,25 @@
     }
     
     .day-cell:hover .day-number {
-        color: var(--white);
+        color: var(--primary);
+        font-weight: 600;
     }
 
     .day-cell .current-day {
       background-color: var(--primary);
       color: var(--white);
       font-weight: 700;
-      box-shadow: 0 0 15px rgba(138, 92, 246, 0.5);
+      box-shadow: 0 0 0 2px var(--primary-light);
     }
 
     .event-dot {
       position: absolute;
-      bottom: 10px;
+      bottom: 8px;
       width: 6px;
       height: 6px;
-      background: var(--primary-light);
+      background: var(--primary);
       border-radius: 50%;
-      box-shadow: 0 0 8px var(--primary-light);
+      box-shadow: 0 0 4px rgba(37, 99, 235, 0.3);
     }
     
     /* --- ADD BUTTON --- */
@@ -255,14 +243,14 @@
       position: absolute;
       bottom: 40px;
       right: 40px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      background: var(--primary);
       color: var(--white);
       border: none;
       border-radius: 50%;
       width: 60px;
       height: 60px;
       cursor: pointer;
-      box-shadow: 0 8px 25px rgba(138, 92, 246, 0.4);
+      box-shadow: var(--shadow-lg);
       transition: var(--transition);
       z-index: 50;
       display: flex;
@@ -271,8 +259,9 @@
     }
 
     .add-btn:hover {
-      transform: scale(1.1) rotate(90deg);
-      box-shadow: 0 12px 30px rgba(138, 92, 246, 0.6);
+      transform: scale(1.05) rotate(90deg);
+      background: var(--primary-dark);
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4);
     }
 
     /* --- MODALS --- */
@@ -282,9 +271,9 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(17, 24, 39, 0.5);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
       display: none;
       justify-content: center;
       align-items: center;
@@ -300,12 +289,10 @@
     }
 
     .modal-content {
-      background: var(--glass-bg);
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
-      border: 1px solid var(--glass-border);
+      background: var(--white);
+      border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      box-shadow: var(--shadow);
+      box-shadow: var(--shadow-lg);
       padding: 24px;
       width: min(450px, 90vw);
       max-height: 80vh;
@@ -320,7 +307,7 @@
     }
 
     .modal-content h3 {
-      color: var(--white);
+      color: var(--text-dark);
       margin-bottom: 20px;
       font-size: 20px;
       font-weight: 600;
@@ -329,8 +316,8 @@
 
     input, textarea {
       width: 100%;
-      background: rgba(17, 24, 39, 0.5);
-      border: 1px solid var(--glass-border);
+      background: var(--white);
+      border: 1px solid var(--border);
       border-radius: var(--radius-sm);
       padding: 12px 16px;
       font-size: 16px;
@@ -344,10 +331,10 @@
     }
 
     input:focus, textarea:focus {
-      background: rgba(17, 24, 39, 0.7);
+      background: var(--white);
       border-color: var(--primary);
       outline: none;
-      box-shadow: 0 0 10px rgba(138, 92, 246, 0.3);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
 
     .modal-actions {
@@ -370,28 +357,31 @@
     .btn-primary {
       background: var(--primary);
       color: var(--white);
-      box-shadow: 0 4px 15px rgba(138, 92, 246, 0.3);
+      box-shadow: var(--shadow);
     }
     .btn-primary:hover {
-      background: var(--primary-light);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(138, 92, 246, 0.4);
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-lg);
     }
     
     .btn-secondary {
-        background: rgba(255, 255, 255, 0.1);
-        color: var(--white);
+        background: var(--bg-secondary);
+        color: var(--text);
+        border: 1px solid var(--border);
     }
     .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.2);
+      background: var(--border-light);
+      border-color: var(--text-muted);
     }
     
     .btn-danger {
-        background: #ef4444;
+        background: #dc2626;
         color: var(--white);
     }
     .btn-danger:hover {
-        background: #f87171;
+        background: #b91c1c;
+        transform: translateY(-1px);
     }
     
     #selectorList {
@@ -401,8 +391,8 @@
     }
     
     #selectorList button {
-        background: rgba(255, 255, 255, 0.1);
-        border: none;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
         color: var(--text);
         padding: 10px;
         border-radius: var(--radius-sm);
@@ -412,10 +402,11 @@
     #selectorList button:hover {
         background: var(--primary);
         color: var(--white);
+        border-color: var(--primary);
     }
     
     #eventDetailsContent b {
-        color: var(--primary-light);
+        color: var(--primary);
         display: block;
         font-size: 1.1em;
     }
@@ -426,7 +417,7 @@
     #eventDetailsContent hr {
         border: none;
         height: 1px;
-        background-color: var(--glass-border);
+        background-color: var(--border);
         margin-bottom: 12px;
     }
 
@@ -436,6 +427,7 @@
     @media (min-width: 1200px) {
       .calendar-app {
         max-width: 1400px;
+        height: calc(100vh - 40px);
       }
       .calendar-container {
         padding: 32px;
@@ -444,7 +436,16 @@
         gap: 16px;
       }
       .day-cell {
-        min-height: 80px;
+        min-height: 85px;
+      }
+      .day-number {
+        font-size: 18px;
+        width: 36px;
+        height: 36px;
+      }
+      .weekdays {
+        font-size: 15px;
+        margin-bottom: 16px;
       }
     }
 
@@ -452,12 +453,21 @@
     @media (max-width: 1199px) and (min-width: 992px) {
       .calendar-app {
         max-width: 1000px;
+        height: calc(100vh - 32px);
+      }
+      .calendar-container {
+        padding: 24px;
       }
       .days-grid {
-        gap: 14px;
+        gap: 12px;
       }
       .day-cell {
-        min-height: 70px;
+        min-height: 75px;
+      }
+      .day-number {
+        font-size: 16px;
+        width: 32px;
+        height: 32px;
       }
     }
 
@@ -477,13 +487,19 @@
         gap: 10px;
       }
       .day-cell {
-        min-height: 60px;
+        min-height: 65px;
       }
       .day-number {
         font-size: 15px;
+        width: 30px;
+        height: 30px;
       }
       #calendarDisplay {
         font-size: 18px;
+      }
+      .weekdays {
+        font-size: 13px;
+        margin-bottom: 10px;
       }
       .add-btn {
         width: 56px;
@@ -511,6 +527,7 @@
       }
       .nav-buttons {
         order: 2;
+        justify-content: center;
       }
       #calendarDisplay { 
         order: 1; 
@@ -519,6 +536,7 @@
       }
       .date-selector {
         order: 3;
+        justify-content: center;
       }
       .calendar-container { 
         padding: 16px; 
@@ -527,7 +545,7 @@
         gap: 8px; 
       }
       .day-cell {
-        min-height: 50px;
+        min-height: 55px;
       }
       .day-number {
         font-size: 14px;
@@ -568,6 +586,7 @@
       }
       .nav-buttons {
         order: 2;
+        justify-content: center;
       }
       #calendarDisplay { 
         order: 1; 
@@ -576,6 +595,7 @@
       }
       .date-selector {
         order: 3;
+        justify-content: center;
       }
       .date-selector button {
         padding: 6px 12px;
@@ -600,7 +620,7 @@
         gap: 6px; 
       }
       .day-cell {
-        min-height: 45px;
+        min-height: 48px;
       }
       .day-number {
         font-size: 13px;
@@ -610,7 +630,7 @@
       .event-dot {
         width: 5px;
         height: 5px;
-        bottom: 8px;
+        bottom: 6px;
       }
       .add-btn { 
         width: 48px; 
@@ -660,7 +680,7 @@
         gap: 4px;
       }
       .day-cell {
-        min-height: 40px;
+        min-height: 42px;
       }
       .day-number {
         font-size: 12px;
@@ -730,28 +750,63 @@
     @media (hover: none) and (pointer: coarse) {
       .day-cell:hover {
         transform: none;
+        border-color: var(--border);
+        background: var(--white);
+        box-shadow: none;
       }
       .day-cell:active {
         transform: scale(0.95);
-        background: rgba(255, 255, 255, 0.2);
+        background: var(--bg-secondary);
+        border-color: var(--primary);
+      }
+      .day-cell:hover .day-number {
+        color: var(--text);
+        font-weight: 500;
       }
       .icon-btn:hover, .date-selector button:hover {
         transform: none;
+        background: var(--white);
+        border-color: var(--border);
+        color: var(--text);
+        box-shadow: none;
       }
       .icon-btn:active, .date-selector button:active {
         transform: scale(0.95);
+        background: var(--primary);
+        border-color: var(--primary);
+        color: var(--white);
       }
       .add-btn:hover {
         transform: none;
+        background: var(--primary);
+        box-shadow: var(--shadow-lg);
       }
       .add-btn:active {
         transform: scale(0.95);
+        background: var(--primary-dark);
       }
       .modal-btn:hover {
         transform: none;
       }
       .modal-btn:active {
         transform: scale(0.98);
+      }
+      
+      /* Increase touch targets for better accessibility */
+      .day-cell {
+        min-height: 44px;
+      }
+      .icon-btn {
+        min-width: 44px;
+        min-height: 44px;
+      }
+      .date-selector button {
+        min-height: 44px;
+        padding: 8px 16px;
+      }
+      .add-btn {
+        min-width: 48px;
+        min-height: 48px;
       }
     }
 
@@ -768,16 +823,66 @@
     @media (prefers-color-scheme: dark) {
       :root {
         --bg: #0f172a;
+        --bg-secondary: #1e293b;
         --text: #f1f5f9;
         --text-dark: #f8fafc;
         --text-muted: #64748b;
+        --text-light: #94a3b8;
+        --border: #334155;
+        --border-light: #475569;
+        --white: #1e293b;
+        --black: #f8fafc;
       }
+    }
+
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+      :root {
+        --primary: #0000ff;
+        --text: #000000;
+        --text-dark: #000000;
+        --border: #000000;
+        --shadow: 0 0 0 2px #000000;
+      }
+      .day-cell {
+        border: 2px solid var(--border);
+      }
+      .day-cell:hover {
+        border: 2px solid var(--primary);
+      }
+    }
+
+    /* Focus indicators for keyboard navigation */
+    .icon-btn:focus,
+    .date-selector button:focus,
+    .add-btn:focus,
+    .modal-btn:focus,
+    .day-cell:focus {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    /* Skip to content link for screen readers */
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 6px;
+      background: var(--primary);
+      color: var(--white);
+      padding: 8px;
+      text-decoration: none;
+      border-radius: 4px;
+      z-index: 1000;
+    }
+    .skip-link:focus {
+      top: 6px;
     }
   </style>
 </head>
 <body>
+  <a href="#main-content" class="skip-link">Bỏ qua đến nội dung chính</a>
 
-  <div class="calendar-app">
+  <div class="calendar-app" id="main-content">
     <div class="header">
       <div class="nav-buttons">
         <button id="prevMonthBtn" class="icon-btn" aria-label="Tháng trước">
