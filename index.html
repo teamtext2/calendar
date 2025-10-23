@@ -3,13 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
-  <title>Text2 — Calendar</title>
+  <title>Text2 — Calendar Pro</title>
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="manifest" href="/site.webmanifest">
+  <meta name="google" content="notranslate">
   <meta name="theme-color" content="#2563eb">
-  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <style>
@@ -35,6 +36,30 @@
       --transition: all 0.2s ease-in-out;
     }
 
+    /* (MỚI) Chế độ tối */
+    body.dark-mode {
+        --bg: #0f172a;
+        --bg-secondary: #1e293b;
+        --text: #ffffff;           /* (SỬA) Thành trắng tinh */
+        --text-dark: #ffffff;      /* (SỬA) Thành trắng tinh */
+        --text-muted: #e2e8f0;      /* (SỬA) Sáng hơn nhiều */
+        --text-light: #94a3b8;     /* (SỬA) Sáng hơn */
+        --border: #334155;
+        --border-light: #475569;
+        --white: #1e293b;
+        --black: #f8fafc;
+    }
+    body.dark-mode .color-swatch.selected {
+      border-color: var(--border-light);
+      box-shadow: 0 0 0 3px var(--text-dark);
+    }
+    /* (MỚI) Style cho danh sách sự kiện chi tiết */
+    body.dark-mode .delete-event-btn:hover {
+      background: #dc2626;
+      border-color: #dc2626;
+      color: var(--white);
+    }
+
     * {
       box-sizing: border-box;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -51,8 +76,13 @@
       align-items: center;
       min-height: 100vh;
       padding: 16px;
-      overflow: hidden;
+      overflow: hidden; 
       position: relative;
+      transition: background-color 0.3s ease; /* Thêm transition */
+    }
+    
+    body.sidebar-open {
+      overflow: hidden;
     }
     
     /* Subtle pattern background */
@@ -63,7 +93,7 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background-image: 
+        background-image:  
           radial-gradient(circle at 25% 25%, rgba(37, 99, 235, 0.05) 0%, transparent 50%),
           radial-gradient(circle at 75% 75%, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
         z-index: -1;
@@ -83,6 +113,8 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      z-index: 1; 
+      transition: margin-left 0.3s ease-in-out, max-width 0.3s ease-in-out, transform 0.3s ease; /* Sửa transition */
     }
 
     /* --- HEADER --- */
@@ -188,6 +220,7 @@
       transition: var(--transition);
       position: relative;
       color: var(--text);
+      overflow: hidden; 
     }
 
     .day-cell:hover {
@@ -214,8 +247,21 @@
       justify-content: center;
       border-radius: 50%;
       transition: var(--transition);
+      z-index: 2; 
     }
     
+    .lunar-day {
+      font-size: 11px;
+      color: var(--text-muted);
+      z-index: 2;
+      display: none; 
+      margin-top: 2px;
+    }
+    
+    body.lunar-visible .lunar-day {
+      display: block; 
+    }
+
     .day-cell:hover .day-number {
         color: var(--primary);
         font-weight: 600;
@@ -233,9 +279,9 @@
       bottom: 8px;
       width: 6px;
       height: 6px;
-      background: var(--primary);
       border-radius: 50%;
       box-shadow: 0 0 4px rgba(37, 99, 235, 0.3);
+      z-index: 1;
     }
     
     /* --- ADD BUTTON --- */
@@ -277,7 +323,7 @@
       display: none;
       justify-content: center;
       align-items: center;
-      z-index: 100;
+      z-index: 1002; 
       padding: 20px;
       opacity: 0;
       transition: opacity 0.3s ease;
@@ -294,12 +340,14 @@
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow-lg);
       padding: 24px;
-      width: min(450px, 90vw);
+      width: min(550px, 95vw); /* (MỚI) Tăng kích thước */
       max-height: 80vh;
       overflow-y: auto;
       color: var(--text);
       transform: scale(0.95);
       transition: transform 0.3s ease;
+      display: flex; /* (MỚI) Thêm flex */
+      flex-direction: column; /* (MỚI) Thêm flex */
     }
     
     .modal.show .modal-content {
@@ -336,6 +384,42 @@
       outline: none;
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
+    
+    /* Input tùy chỉnh (cho file, date) */
+    .input-group {
+      margin-bottom: 12px;
+    }
+    .input-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    input[type="date"], input[type="file"] {
+      padding: 10px 16px;
+    }
+    input[type="file"] {
+      font-size: 14px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      box-shadow: none;
+    }
+     input[type="file"]::file-selector-button {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      cursor: pointer;
+      transition: var(--transition);
+      padding: 8px 12px;
+      margin-right: 12px;
+     }
+     input[type="file"]::file-selector-button:hover {
+       background: var(--bg-secondary);
+     }
+
 
     .modal-actions {
         display: flex;
@@ -405,29 +489,270 @@
         border-color: var(--primary);
     }
     
-    #eventDetailsContent b {
-        color: var(--primary);
-        display: block;
+    /* (MỚI) Sửa lại style cho #eventDetailsContent */
+    #eventDetailsContent {
+      flex: 1; /* Cho phép co giãn */
+      overflow-y: auto; /* Thêm cuộn nếu cần */
+      margin-bottom: 16px;
+      max-height: 40vh; /* Giới hạn chiều cao */
+      padding-right: 10px; /* Chỗ cho thanh cuộn */
+    }
+    .event-list-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border-light);
+    }
+    .event-list-item:last-child {
+        border-bottom: none;
+    }
+    .event-list-item-details {
+        flex: 1;
+        margin-right: 12px;
+    }
+    .event-list-item-details b {
         font-size: 1.1em;
+        display: block;
     }
-    #eventDetailsContent p {
-        margin: 4px 0 12px;
-        line-height: 1.6;
+    .event-list-item-details p {
+        margin: 4px 0 0;
+        line-height: 1.5;
+        font-size: 15px;
+        color: var(--text-muted);
     }
-    #eventDetailsContent hr {
-        border: none;
-        height: 1px;
-        background-color: var(--border);
-        margin-bottom: 12px;
+    .delete-event-btn {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        color: var(--text-muted);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+    }
+    .delete-event-btn svg { width: 18px; height: 18px; }
+    .delete-event-btn:hover {
+        background: #dc2626;
+        border-color: #dc2626;
+        color: var(--white);
     }
 
+
+    /* --- SIDEBAR (MỚI) --- */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 300px;
+      height: 100vh;
+      height: 100svh; /* (SỬA) */
+      background: var(--bg);
+      border-right: 1px solid var(--border);
+      box-shadow: var(--shadow-lg);
+      z-index: 1001;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease-in-out;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      padding-top: calc(20px + env(safe-area-inset-top)); /* (SỬA) */
+      padding-bottom: calc(20px + env(safe-area-inset-bottom)); /* (SỬA) */
+      padding-left: calc(20px + env(safe-area-inset-left)); /* (SỬA) */
+      overflow-y: auto;
+    }
+    .sidebar.open {
+      transform: translateX(0);
+    }
+    .sidebar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .sidebar-header h2 {
+      font-size: 20px;
+      color: var(--text-dark);
+    }
+    #closeSidebarBtn {
+      background: transparent;
+      border: none;
+    }
+    
+    .sidebar-section {
+      margin-bottom: 20px;
+    }
+    .sidebar-section h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 4px;
+    }
+    
+    /* Toggle Switch */
+    .switch-group {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+    }
+    .switch-group label {
+      font-size: 16px;
+      color: var(--text);
+      font-weight: 500;
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+    .switch input { 
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--border);
+      transition: .4s;
+      border-radius: 24px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: var(--primary);
+    }
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
+    /* Search Results */
+    #searchResults {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+    #searchResults li {
+      padding: 10px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 14px;
+    }
+    #searchResults li:hover {
+      background: var(--bg-secondary);
+    }
+    #searchResults li small {
+      color: var(--primary);
+      font-weight: 600;
+      margin-right: 8px;
+    }
+
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    /* (MỚI) Sửa logic overlay */
+    @media (max-width: 1023.98px) {
+      .sidebar-overlay.open {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+
+    /* --- COLOR PICKER (MỚI) --- */
+    .color-picker {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+      margin-top: 8px;
+      justify-content: center;
+    }
+    .color-swatch {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 3px solid transparent;
+      transition: var(--transition);
+      box-shadow: var(--shadow);
+    }
+    .color-swatch.selected {
+      border-color: var(--white);
+      box-shadow: 0 0 0 3px var(--text-dark);
+      transform: scale(1.1);
+    }
+
+    /* --- TOAST (MỚI) --- */
+    .toast {
+      position: fixed;
+      bottom: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--text-dark);
+      color: var(--bg);
+      padding: 12px 24px;
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      z-index: 1005;
+      transition: bottom 0.3s ease-in-out;
+      font-size: 15px;
+    }
+    .toast.show {
+      bottom: 30px;
+    }
 
     /* --- RESPONSIVE --- */
+    /* (MỚI) Logic đẩy UI khi sidebar mở trên desktop */
+    @media (min-width: 1024px) {
+      body.sidebar-open .calendar-app {
+        margin-left: 300px;
+        max-width: calc(1200px - 300px); 
+      }
+    }
+    
     /* Desktop Large (1200px+) */
     @media (min-width: 1200px) {
       .calendar-app {
         max-width: 1400px;
         height: calc(100vh - 40px);
+      }
+      body.sidebar-open .calendar-app {
+         max-width: calc(1400px - 300px);
       }
       .calendar-container {
         padding: 32px;
@@ -447,27 +772,8 @@
         font-size: 15px;
         margin-bottom: 16px;
       }
-    }
-
-    /* Desktop Medium (992px - 1199px) */
-    @media (max-width: 1199px) and (min-width: 992px) {
-      .calendar-app {
-        max-width: 1000px;
-        height: calc(100vh - 32px);
-      }
-      .calendar-container {
-        padding: 24px;
-      }
-      .days-grid {
-        gap: 12px;
-      }
-      .day-cell {
-        min-height: 75px;
-      }
-      .day-number {
-        font-size: 16px;
-        width: 32px;
-        height: 32px;
+      .lunar-day {
+        font-size: 12px;
       }
     }
 
@@ -510,7 +816,7 @@
     }
 
     /* Tablet Portrait & Mobile Large (481px - 767px) */
-    @media (max-width: 767px) and (min-width: 481px) {
+    @media (max-width: 767px) {
       body { 
         padding: 8px; 
       }
@@ -527,7 +833,9 @@
       }
       .nav-buttons {
         order: 2;
-        justify-content: center;
+        width: 100%;
+        justify-content: center; /* (SỬA) */
+        gap: 12px; /* (MỚI) */
       }
       #calendarDisplay { 
         order: 1; 
@@ -536,7 +844,8 @@
       }
       .date-selector {
         order: 3;
-        justify-content: center;
+        width: 100%;
+        justify-content: center; 
       }
       .calendar-container { 
         padding: 16px; 
@@ -546,11 +855,15 @@
       }
       .day-cell {
         min-height: 55px;
+        border-radius: var(--radius-sm); 
       }
       .day-number {
         font-size: 14px;
         width: 28px;
         height: 28px;
+      }
+      .lunar-day {
+        font-size: 10px;
       }
       .weekdays {
         font-size: 13px;
@@ -566,6 +879,10 @@
         width: min(400px, 95vw);
         padding: 20px;
       }
+      /* Sidebar trên mobile */
+      .sidebar {
+        width: min(300px, 85vw);
+      }
     }
 
     /* Mobile Portrait (320px - 480px) */
@@ -575,8 +892,13 @@
       }
       .calendar-app { 
         height: 100vh; 
+        height: 100svh; /* (SỬA) */
         max-height: none;
         border-radius: 0; 
+        padding-top: env(safe-area-inset-top); /* (SỬA) */
+        padding-bottom: env(safe-area-inset-bottom); /* (SỬA) */
+        padding-left: env(safe-area-inset-left); /* (SỬA) */
+        padding-right: env(safe-area-inset-right); /* (SỬA) */
       }
       .header { 
         flex-direction: column;
@@ -586,7 +908,9 @@
       }
       .nav-buttons {
         order: 2;
-        justify-content: center;
+        width: 100%;
+        justify-content: center; /* (SỬA) */
+        gap: 12px; /* (MỚI) */
       }
       #calendarDisplay { 
         order: 1; 
@@ -595,6 +919,7 @@
       }
       .date-selector {
         order: 3;
+        width: 100%;
         justify-content: center;
       }
       .date-selector button {
@@ -602,8 +927,8 @@
         font-size: 14px;
       }
       .icon-btn {
-        width: 36px;
-        height: 36px;
+        width: 40px; /* (SỬA) */
+        height: 40px; /* (SỬA) */
       }
       .icon-btn svg {
         width: 18px;
@@ -621,11 +946,15 @@
       }
       .day-cell {
         min-height: 48px;
+        border-radius: var(--radius-sm);
       }
       .day-number {
         font-size: 13px;
         width: 26px;
         height: 26px;
+      }
+      .lunar-day {
+        font-size: 9px;
       }
       .event-dot {
         width: 5px;
@@ -637,68 +966,28 @@
         height: 48px; 
         bottom: 16px; 
         right: 16px; 
+        bottom: calc(16px + env(safe-area-inset-bottom)); /* (SỬA) */
+        right: calc(16px + env(safe-area-inset-right)); /* (SỬA) */
       }
       .add-btn svg {
         width: 24px;
         height: 24px;
       }
       .modal {
-        padding: 10px;
+        padding: 0;
+        align-items: flex-end; 
       }
       .modal-content {
-        width: min(350px, 98vw);
+        width: 100vw;
+        max-height: 90vh;
+        max-height: 90svh; /* (SỬA) */
         padding: 16px;
-        border-radius: var(--radius-md);
+        padding-bottom: calc(16px + env(safe-area-inset-bottom)); /* (SỬA) */
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        transform: translateY(100%);
       }
-      .modal-content h3 {
-        font-size: 18px;
-        margin-bottom: 16px;
-      }
-      input, textarea {
-        padding: 10px 12px;
-        font-size: 15px;
-        margin-bottom: 10px;
-      }
-      .modal-btn {
-        padding: 10px;
-        font-size: 14px;
-      }
-    }
-
-    /* Extra Small Mobile (max 319px) */
-    @media (max-width: 319px) {
-      .header {
-        padding: 10px 12px;
-      }
-      #calendarDisplay {
-        font-size: 16px;
-      }
-      .calendar-container {
-        padding: 8px;
-      }
-      .days-grid {
-        gap: 4px;
-      }
-      .day-cell {
-        min-height: 42px;
-      }
-      .day-number {
-        font-size: 12px;
-        width: 24px;
-        height: 24px;
-      }
-      .weekdays {
-        font-size: 11px;
-      }
-      .add-btn {
-        width: 44px;
-        height: 44px;
-        bottom: 12px;
-        right: 12px;
-      }
-      .modal-content {
-        width: min(300px, 96vw);
-        padding: 12px;
+      .modal.show .modal-content {
+        transform: translateY(0);
       }
     }
 
@@ -709,7 +998,12 @@
       }
       .header {
         padding: 8px 16px;
+        flex-direction: row; 
       }
+      .nav-buttons { order: 1; width: auto; }
+      #calendarDisplay { order: 2; }
+      .date-selector { order: 3; width: auto; }
+      
       .calendar-container {
         padding: 8px 16px;
       }
@@ -724,6 +1018,9 @@
         width: 22px;
         height: 22px;
       }
+      .lunar-day {
+        display: none; 
+      }
       .weekdays {
         font-size: 11px;
         margin-bottom: 6px;
@@ -736,21 +1033,11 @@
       }
     }
 
-    /* High DPI displays */
-    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-      .event-dot {
-        box-shadow: 0 0 6px var(--primary-light);
-      }
-      .day-cell.current-day .day-number {
-        box-shadow: 0 0 12px rgba(138, 92, 246, 0.4);
-      }
-    }
-
     /* Touch device optimizations */
     @media (hover: none) and (pointer: coarse) {
       .day-cell:hover {
         transform: none;
-        border-color: var(--border);
+        border-color: var(--border-light);
         background: var(--white);
         box-shadow: none;
       }
@@ -792,7 +1079,6 @@
         transform: scale(0.98);
       }
       
-      /* Increase touch targets for better accessibility */
       .day-cell {
         min-height: 44px;
       }
@@ -810,54 +1096,17 @@
       }
     }
 
-    /* Accessibility improvements for larger text */
-    @media (prefers-reduced-motion: reduce) {
-      * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-      }
-    }
-
-    /* Dark mode support */
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #0f172a;
-        --bg-secondary: #1e293b;
-        --text: #f1f5f9;
-        --text-dark: #f8fafc;
-        --text-muted: #64748b;
-        --text-light: #94a3b8;
-        --border: #334155;
-        --border-light: #475569;
-        --white: #1e293b;
-        --black: #f8fafc;
-      }
-    }
-
-    /* High contrast mode support */
-    @media (prefers-contrast: high) {
-      :root {
-        --primary: #0000ff;
-        --text: #000000;
-        --text-dark: #000000;
-        --border: #000000;
-        --shadow: 0 0 0 2px #000000;
-      }
-      .day-cell {
-        border: 2px solid var(--border);
-      }
-      .day-cell:hover {
-        border: 2px solid var(--primary);
-      }
-    }
+    /* (MỚI) Bỏ media query cho dark mode */
+    /* @media (prefers-color-scheme: dark) { ... } */
 
     /* Focus indicators for keyboard navigation */
     .icon-btn:focus,
     .date-selector button:focus,
     .add-btn:focus,
     .modal-btn:focus,
-    .day-cell:focus {
+    .day-cell:focus,
+    .sidebar input:focus,
+    .sidebar button:focus {
       outline: 2px solid var(--primary);
       outline-offset: 2px;
     }
@@ -880,58 +1129,135 @@
   </style>
 </head>
 <body>
-  <a href="#main-content" class="skip-link">Bỏ qua đến nội dung chính</a>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
 
+  <!-- Sidebar (Mới) -->
+  <nav class="sidebar" id="sidebar" aria-label="Options menu">
+    <div class="sidebar-header">
+      <h2>Options</h2>
+      <button id="closeSidebarBtn" class="icon-btn" aria-label="Close menu">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
+    </div>
+
+    <div class="sidebar-content">
+      <div class="sidebar-section">
+        <h3>Search</h3>
+        <div class="input-group">
+          <label for="searchEventsInput">Search events</label>
+          <input type="search" id="searchEventsInput" placeholder="Enter event name...">
+          <ul id="searchResults"></ul>
+        </div>
+        <div class="input-group">
+          <label for="gotoDateInput">Go to date</label>
+          <input type="date" id="gotoDateInput">
+        </div>
+      </div>
+      
+      <div class="sidebar-section">
+        <h3>Settings</h3>
+        <div class="switch-group">
+          <label for="lunarToggle">Show Lunar</label>
+          <label class="switch">
+            <input type="checkbox" id="lunarToggle">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <!-- (MỚI) Thêm theme toggle -->
+        <div class="switch-group">
+          <label for="themeToggle">Dark Mode</label>
+          <label class="switch">
+            <input type="checkbox" id="themeToggle">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <h3>Data</h3>
+        <div class="input-group">
+          <label for="importFileBtn">Import events file (.json)</label>
+          <input type="file" id="importFileBtn" accept=".json">
+        </div>
+        <div class="input-group">
+           <button id="exportFileBtn" class="modal-btn btn-secondary" style="width: 100%;">Export events file</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Overlay (Mới) -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Main App -->
   <div class="calendar-app" id="main-content">
     <div class="header">
       <div class="nav-buttons">
-        <button id="prevMonthBtn" class="icon-btn" aria-label="Tháng trước">
+        <!-- Nút Menu (Mới) -->
+        <button id="menuToggleBtn" class="icon-btn" aria-label="Open menu">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </button>
+        <button id="prevMonthBtn" class="icon-btn" aria-label="Previous month">
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
         </button>
-        <button id="nextMonthBtn" class="icon-btn" aria-label="Tháng sau">
+        <button id="nextMonthBtn" class="icon-btn" aria-label="Next month">
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
         </button>
       </div>
       <div id="calendarDisplay"></div>
       <div class="date-selector">
-        <button id="monthSelector">Tháng</button>
-        <button id="yearSelector">Năm</button>
+        <button id="monthSelector">Month</button>
+        <button id="yearSelector">Year</button>
       </div>
     </div>
 
     <div class="calendar-container">
       <div class="weekdays">
-        <span>CN</span><span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span>
+        <span>SUN</span><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span>
       </div>
       <div id="daysGrid" class="days-grid"></div>
     </div>
   </div>
 
-  <button id="addEventBtn" class="add-btn" aria-label="Thêm sự kiện">
+  <button id="addEventBtn" class="add-btn" aria-label="Add event">
     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 28px; height: 28px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
   </button>
+
+  <!-- Toast (Mới) -->
+  <div id="toast-notification" class="toast"></div>
 
   <!-- Modals -->
   <div id="selectorModal" class="modal">
     <div class="modal-content">
-      <h3 id="selectorTitle">Chọn...</h3>
+      <h3 id="selectorTitle">Select...</h3>
       <div id="selectorList"></div>
       <div class="modal-actions">
-          <button onclick="closeModal('selectorModal')" class="modal-btn btn-secondary">Đóng</button>
+          <button onclick="closeModal('selectorModal')" class="modal-btn btn-secondary">Close</button>
       </div>
     </div>
   </div>
 
   <div id="eventFormModal" class="modal">
     <div class="modal-content">
-      <h3>Thêm sự kiện cho <span id="eventDateDisplay"></span></h3>
+      <h3>Add event for <span id="eventDateDisplay"></span></h3>
       <form id="eventForm">
         <input type="hidden" id="eventDayDate">
-        <input type="text" id="eventTitle" placeholder="Tên sự kiện" required>
-        <textarea id="eventDetails" placeholder="Chi tiết (tùy chọn)" rows="3"></textarea>
+        <input type="text" id="eventTitle" placeholder="Event title" required>
+        <textarea id="eventDetails" placeholder="Details (optional)" rows="3"></textarea>
+        
+        <!-- Color Picker (Mới) -->
+        <input type="hidden" id="eventColor" value="#2563eb">
+        <div class="color-picker" id="colorPicker">
+            <span class="color-swatch selected" data-color="#2563eb" style="background-color: #2563eb;" aria-label="Blue color"></span>
+            <span class="color-swatch" data-color="#e11d48" style="background-color: #e11d48;" aria-label="Red color"></span>
+            <span class="color-swatch" data-color="#16a34a" style="background-color: #16a34a;" aria-label="Green color"></span>
+            <span class="color-swatch" data-color="#f97316" style="background-color: #f97316;" aria-label="Orange color"></span>
+            <span class="color-swatch" data-color="#6d28d9" style="background-color: #6d28d9;" aria-label="Purple color"></span>
+        </div>
+
         <div class="modal-actions">
-            <button type="button" onclick="closeModal('eventFormModal')" class="modal-btn btn-secondary">Hủy</button>
-            <button type="submit" class="modal-btn btn-primary">Lưu</button>
+            <button type="button" onclick="closeModal('eventFormModal')" class="modal-btn btn-secondary">Cancel</button>
+            <button type="submit" class="modal-btn btn-primary">Save</button>
         </div>
       </form>
     </div>
@@ -939,17 +1265,21 @@
 
   <div id="eventDetailsModal" class="modal">
     <div class="modal-content">
-      <h3>Sự kiện ngày <span id="popupEventDate"></span></h3>
-      <div id="eventDetailsContent"></div>
+      <h3>Events for <span id="popupEventDate"></span></h3>
+      <!-- (MỚI) Sửa lại eventDetailsContent -->
+      <div id="eventDetailsContent">
+          <!-- JS sẽ render danh sách sự kiện vào đây -->
+      </div>
+      <!-- (MỚI) Sửa lại modal-actions -->
       <div class="modal-actions">
-        <button onclick="closeModal('eventDetailsModal')" class="modal-btn btn-secondary">Đóng</button>
-        <button onclick="deleteEvent()" class="modal-btn btn-danger">Xóa</button>
+        <button onclick="closeModal('eventDetailsModal')" class="modal-btn btn-secondary">Close</button>
+        <button id="addAnotherEventBtn" class="modal-btn btn-primary">Add New</button>
       </div>
     </div>
   </div>
 
   <script>
-    const monthNames = ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"];
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     const calendarDisplay = document.getElementById("calendarDisplay");
     const daysGrid = document.getElementById("daysGrid");
     const monthSelectorBtn = document.getElementById("monthSelector");
@@ -967,11 +1297,28 @@
     const eventForm = document.getElementById("eventForm");
     const eventDateDisplay = document.getElementById("eventDateDisplay");
     const eventDayDateInput = document.getElementById("eventDayDate");
+    
+    // (Mới) DOM Elements cho Sidebar
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const menuToggleBtn = document.getElementById('menuToggleBtn');
+    const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+    const searchEventsInput = document.getElementById('searchEventsInput');
+    const searchResults = document.getElementById('searchResults');
+    const gotoDateInput = document.getElementById('gotoDateInput');
+    const lunarToggle = document.getElementById('lunarToggle');
+    const themeToggle = document.getElementById('themeToggle'); // (Mới) Thêm theme toggle
+    const importFileBtn = document.getElementById('importFileBtn');
+    const exportFileBtn = document.getElementById('exportFileBtn');
+    const colorPicker = document.getElementById('colorPicker');
+    const eventColorInput = document.getElementById('eventColor');
+    const addAnotherEventBtn = document.getElementById('addAnotherEventBtn'); // (Mới) Thêm nút
 
     let currentDate = new Date();
     let currentMonth = currentDate.getMonth();
     let currentYear = currentDate.getFullYear();
     let selectedDayForEvent = null;
+    let showLunar = false; 
 
     function loadEvents() {
       return JSON.parse(localStorage.getItem("calendarEvents") || "{}");
@@ -990,6 +1337,16 @@
       return `${p[2]}/${p[1]}/${p[0]}`;
     }
 
+    function getLunarDate(d, m, y) {
+      // Placeholder
+      let lunarDay = d;
+      let lunarMonth = (m === 1 ? 12 : m - 1);
+      if (d > 28) lunarDay = d - 28;
+      if (d === 1) lunarMonth = m;
+      if (d === 30) lunarMonth = m;
+      return `${lunarDay}/${lunarMonth}`;
+    }
+
     function renderCalendar() {
       const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
       const firstDay = firstDayOfMonth.getDay();
@@ -1002,29 +1359,42 @@
 
       const daysInPrevMonth = new Date(currentYear, currentMonth, 0).getDate();
 
-      // Previous month's days
       for (let i = firstDay; i > 0; i--) {
         const day = daysInPrevMonth - i + 1;
-        daysGrid.appendChild(createCell(day, "inactive"));
+        daysGrid.appendChild(createCell(day, "inactive", null));
       }
 
       const today = new Date();
       const events = loadEvents();
-      // Current month's days
       for (let d = 1; d <= daysInMonth; d++) {
         const date = new Date(currentYear, currentMonth, d);
         const key = formatDate(date);
-        const cell = createCell(d, "");
+        const cell = createCell(d, "", key);
 
         if (today.toDateString() === date.toDateString()) {
           const span = cell.querySelector(".day-number");
           span.classList.add("current-day");
         }
         
-        if (events[key]?.length) {
-          const dot = document.createElement("div");
-          dot.className = "event-dot";
-          cell.appendChild(dot);
+        const dayEvents = events[key] || [];
+        if (dayEvents.length) {
+          // (MỚI) Hiển thị nhiều dot (tối đa 3)
+          const dotsContainer = document.createElement('div');
+          dotsContainer.style.display = 'flex';
+          dotsContainer.style.gap = '3px';
+          dotsContainer.style.position = 'absolute';
+          dotsContainer.style.bottom = '8px';
+          
+          dayEvents.slice(0, 3).forEach(event => {
+              const dot = document.createElement("div");
+              dot.className = "event-dot";
+              dot.style.backgroundColor = event.color || 'var(--primary)';
+              dot.style.position = 'relative'; // Bỏ absolute
+              dot.style.bottom = 'auto';
+              dotsContainer.appendChild(dot);
+          });
+          
+          cell.appendChild(dotsContainer);
           cell.onclick = (e) => { e.stopPropagation(); showEventDetails(key); };
         } else {
           cell.onclick = (e) => { e.stopPropagation(); showEventForm(key); };
@@ -1032,21 +1402,31 @@
         daysGrid.appendChild(cell);
       }
       
-      // Next month's days
-      const totalCells = 42; // 6 rows * 7 columns
+      const totalCells = 42; 
       const filledCells = firstDay + daysInMonth;
       for (let i = 1; i <= totalCells - filledCells; i++) {
-        daysGrid.appendChild(createCell(i, "inactive"));
+        daysGrid.appendChild(createCell(i, "inactive", null));
       }
     }
 
-    function createCell(day, className) {
+    function createCell(day, className, dateKey) {
       const div = document.createElement("div");
       div.className = `day-cell ${className}`;
+      if(dateKey) div.dataset.date = dateKey; 
+
       const num = document.createElement("span");
       num.className = "day-number";
       num.textContent = day;
       div.appendChild(num);
+      
+      const lunar = document.createElement("span");
+      lunar.className = "lunar-day";
+      if (!className && dateKey) {
+         const [y, m, d] = dateKey.split('-').map(Number);
+         lunar.textContent = getLunarDate(d, m, y);
+      }
+      div.appendChild(lunar);
+
       return div;
     }
 
@@ -1072,7 +1452,7 @@
 
     function showSelector(type) {
       selectorList.innerHTML = "";
-      selectorTitle.textContent = type === "month" ? "Chọn tháng" : "Chọn năm";
+      selectorTitle.textContent = type === "month" ? "Select month" : "Select year";
       const opts = type === "month" 
         ? monthNames.map((n, i) => ({ n, i })) 
         : [...Array(11)].map((_, i) => ({ n: currentYear - 5 + i, i: currentYear - 5 + i }));
@@ -1096,6 +1476,11 @@
       eventDateDisplay.textContent = formatDisplayDate(date);
       eventDayDateInput.value = date;
       eventForm.reset();
+      document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+      const defaultColorEl = document.querySelector('.color-swatch[data-color="#2563eb"]');
+      if (defaultColorEl) defaultColorEl.classList.add('selected');
+      eventColorInput.value = '#2563eb';
+      
       showModal("eventFormModal");
       document.getElementById("eventTitle").focus();
     }
@@ -1104,48 +1489,292 @@
       e.preventDefault();
       const title = document.getElementById("eventTitle").value;
       const details = document.getElementById("eventDetails").value;
+      const color = eventColorInput.value; 
       const date = eventDayDateInput.value;
       if (!title) return;
       const ev = loadEvents();
       if (!ev[date]) ev[date] = [];
-      ev[date].push({ title, details });
+      ev[date].push({ title, details, color }); 
       saveEvents(ev);
       renderCalendar();
       closeModal("eventFormModal");
     };
 
+    // (MỚI) Sửa lại hàm showEventDetails
     function showEventDetails(date) {
       selectedDayForEvent = date;
       const ev = loadEvents()[date] || [];
       popupEventDate.textContent = formatDisplayDate(date);
-      eventDetailsContent.innerHTML = ev.length ? ev.map(e => `<div><b>${e.title}</b><p>${e.details || "Không có chi tiết"}</p></div><hr>`).join("") : "<p>Không có sự kiện</p>";
+      
+      eventDetailsContent.innerHTML = ev.length ? ev.map((e, index) => `
+        <div class="event-list-item">
+            <div class="event-list-item-details">
+                <b style="color: ${e.color || 'var(--primary)'}">${e.title}</b>
+                <p>${e.details || "No details"}</p>
+            </div>
+            <button class="delete-event-btn" data-index="${index}" aria-label="Delete event ${e.title}">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+            </button>
+        </div>
+      `).join("") : "<p>No events</p>";
+      
       showModal("eventDetailsModal");
     }
 
-    function deleteEvent() {
-      if (!selectedDayForEvent) return;
-      const ev = loadEvents();
-      delete ev[selectedDayForEvent];
-      saveEvents(ev);
-      renderCalendar();
-      closeModal("eventDetailsModal");
+    // (MỚI) Hàm xóa 1 sự kiện
+    function deleteSingleEvent(date, index) {
+        const ev = loadEvents();
+        if (!ev[date] || !ev[date][index]) return;
+        
+        ev[date].splice(index, 1); // Xóa sự kiện tại index
+        
+        if (ev[date].length === 0) { // Nếu không còn sự kiện nào, xóa key
+            delete ev[date];
+        }
+        
+        saveEvents(ev);
+        renderCalendar();
+        
+        // Tải lại modal hoặc đóng nếu hết sự kiện
+        if (ev[date]) {
+            showEventDetails(date);
+        } else {
+            closeModal('eventDetailsModal');
+        }
     }
     
+    // (MỚI) Toast notification
+    function showToast(message) {
+      const toast = document.getElementById('toast-notification');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+    
+    // (MỚI) --- Sidebar Functions ---
+    function openSidebar() {
+      sidebar.classList.add('open');
+      document.body.classList.add('sidebar-open');
+      if (window.innerWidth < 1024) {
+        sidebarOverlay.classList.add('open');
+      }
+    }
+
+    function closeSidebar() {
+      sidebar.classList.remove('open');
+      document.body.classList.remove('sidebar-open');
+      sidebarOverlay.classList.remove('open');
+    }
+    
+    function gotoDate(dateString) {
+        const [year, month, day] = dateString.split('-').map(Number);
+        currentYear = year;
+        currentMonth = month - 1;
+        renderCalendar();
+        
+        setTimeout(() => {
+          const cell = document.querySelector(`.day-cell[data-date="${dateString}"]`);
+          if (cell) {
+            cell.style.transition = 'none';
+            cell.style.backgroundColor = 'var(--primary-light)';
+            cell.style.borderColor = 'var(--primary-dark)';
+            setTimeout(() => {
+              cell.style.transition = 'var(--transition)';
+              cell.style.backgroundColor = '';
+              cell.style.borderColor = '';
+            }, 1000);
+          }
+        }, 100);
+        
+        closeSidebar();
+    }
+    
+    // (MỚI) --- Theme Functions ---
+    function setTheme(theme) {
+      if (theme === 'dark') {
+        document.body.classList.add('dark-mode');
+        localStorage.setItem('calendarTheme', 'dark');
+        themeToggle.checked = true;
+      } else {
+        document.body.classList.remove('dark-mode');
+        localStorage.setItem('calendarTheme', 'light');
+        themeToggle.checked = false;
+      }
+    }
+
     // --- Event Listeners ---
+    menuToggleBtn.onclick = openSidebar;
+    closeSidebarBtn.onclick = closeSidebar;
+    sidebarOverlay.onclick = closeSidebar;
+
     document.getElementById("prevMonthBtn").onclick = () => changeMonth(-1);
     document.getElementById("nextMonthBtn").onclick = () => changeMonth(1);
     monthSelectorBtn.onclick = () => showSelector("month");
     yearSelectorBtn.onclick = () => showSelector("year");
     document.getElementById("addEventBtn").onclick = () => showEventForm(formatDate(new Date()));
     
-    // Close modal on outside click
+    // (MỚI) Nút thêm mới từ modal chi tiết
+    addAnotherEventBtn.onclick = () => {
+        closeModal('eventDetailsModal');
+        // selectedDayForEvent vẫn đang giữ ngày
+        if (selectedDayForEvent) {
+            showEventForm(selectedDayForEvent);
+        }
+    };
+    
+    // (MỚI) Listener cho nút xóa (event delegation)
+    eventDetailsContent.addEventListener('click', e => {
+        const deleteBtn = e.target.closest('.delete-event-btn');
+        if (deleteBtn) {
+            const index = parseInt(deleteBtn.dataset.index, 10);
+            if (selectedDayForEvent && index >= 0) {
+                deleteSingleEvent(selectedDayForEvent, index);
+            }
+        }
+    });
+    
+    // (MỚI) Sidebar Listeners
+    lunarToggle.onchange = (e) => {
+      showLunar = e.target.checked;
+      document.body.classList.toggle('lunar-visible', showLunar);
+      localStorage.setItem('calendarShowLunar', showLunar);
+    };
+    
+    // (MỚI) Theme listener
+    themeToggle.onchange = (e) => {
+      setTheme(e.target.checked ? 'dark' : 'light');
+    };
+    
+    searchEventsInput.oninput = (e) => {
+      const searchTerm = e.target.value.toLowerCase();
+      searchResults.innerHTML = '';
+      if (searchTerm.length < 2) return;
+      
+      const events = loadEvents();
+      let found = [];
+      for (const date in events) {
+          events[date].forEach(event => {
+              const title = (event.title || '').toLowerCase();
+              const details = (event.details || '').toLowerCase();
+              if (title.includes(searchTerm) || details.includes(searchTerm)) {
+                  found.push({ date, event });
+              }
+          });
+      }
+      
+      if(found.length === 0) {
+        searchResults.innerHTML = '<li>No results found...</li>';
+        return;
+      }
+      
+      found.sort((a,b) => new Date(a.date) - new Date(b.date)); 
+      
+      found.forEach(item => {
+          const li = document.createElement('li');
+          li.innerHTML = `<small>${formatDisplayDate(item.date)}</small> ${item.event.title}`;
+          li.onclick = () => gotoDate(item.date);
+          searchResults.appendChild(li);
+      });
+    };
+    
+    gotoDateInput.onchange = (e) => {
+      if(e.target.value) gotoDate(e.target.value);
+    };
+    
+    importFileBtn.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (res) => {
+                try {
+                    const importedEvents = JSON.parse(res.target.result);
+                    const currentEvents = loadEvents();
+                    // Merge
+                    const mergedEvents = { ...currentEvents };
+                    // (MỚI) Cải thiện logic merge: Nối mảng thay vì ghi đè
+                    for (const date in importedEvents) {
+                        if (mergedEvents[date]) {
+                            mergedEvents[date] = mergedEvents[date].concat(importedEvents[date]);
+                        } else {
+                            mergedEvents[date] = importedEvents[date];
+                        }
+                    }
+                    saveEvents(mergedEvents);
+                    renderCalendar();
+                    showToast('Events imported successfully!');
+                    closeSidebar();
+                } catch (err) {
+                    console.error(err);
+                    showToast('Error: Invalid JSON file.');
+                }
+                e.target.value = null; // Reset input
+            };
+            reader.readAsText(file);
+        }
+    };
+    
+    exportFileBtn.onclick = () => {
+        const events = loadEvents();
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(events, null, 2));
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href",     dataStr);
+        downloadAnchorNode.setAttribute("download", `calendar_events_${formatDate(new Date())}.json`);
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+        showToast('Events file exported!');
+    };
+    
+    colorPicker.addEventListener('click', e => {
+        if (e.target.classList.contains('color-swatch')) {
+            document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+            e.target.classList.add('selected');
+            eventColorInput.value = e.target.dataset.color;
+        }
+    });
+    
     window.addEventListener('click', (e) => {
         if (e.target.classList.contains('modal')) {
             closeModal(e.target.id);
         }
     });
 
+    // (MỚI) Khởi tạo trạng thái sidebar và theme khi tải trang
+    
+    // 1. Theme
+    const savedTheme = localStorage.getItem('calendarTheme');
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (savedTheme) {
+      setTheme(savedTheme);
+    } else if (prefersDark) {
+      setTheme('dark');
+    } else {
+      setTheme('light');
+    }
+
+    // 2. Sidebar
+    window.addEventListener('resize', () => {
+        if (window.innerWidth >= 1024) {
+            sidebarOverlay.classList.remove('open');
+        } else {
+            if (sidebar.classList.contains('open')) {
+                sidebarOverlay.classList.add('open');
+                document.body.classList.add('sidebar-open');
+            }
+        }
+    });
+    
+    if (window.innerWidth >= 1024) {
+        openSidebar();
+    }
+    
+    // 3. Lunar
+    showLunar = localStorage.getItem('calendarShowLunar') === 'true';
+    lunarToggle.checked = showLunar;
+    document.body.classList.toggle('lunar-visible', showLunar);
+
     renderCalendar();
   </script>
 </body>
 </html>
+
