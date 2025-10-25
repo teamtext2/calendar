@@ -674,6 +674,28 @@
     .sidebar.open {
       transform: translateX(0);
     }
+    
+    /* Mobile sidebar - hiển thị ở dưới */
+    @media (max-width: 1023px) {
+      .sidebar {
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: auto;
+        max-height: 70vh;
+        max-height: 70svh;
+        border-right: none;
+        border-top: 1px solid var(--border);
+        transform: translateY(100%);
+        padding: 16px;
+        padding-bottom: calc(16px + env(safe-area-inset-bottom));
+      }
+      .sidebar.open {
+        transform: translateY(0);
+      }
+    }
     .sidebar-header {
       display: flex;
       justify-content: space-between;
@@ -851,6 +873,27 @@
       }
     }
     
+    /* Mobile-specific improvements */
+    @media (max-width: 1023px) {
+      /* Đảm bảo calendar không bị đẩy khi sidebar mở */
+      body.sidebar-open .calendar-app {
+        margin-left: 0;
+        max-width: none;
+      }
+      
+      /* Cải thiện hiệu ứng mở sidebar từ dưới */
+      .sidebar {
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      
+      /* Tối ưu overlay cho mobile */
+      .sidebar-overlay {
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+      }
+    }
+    
     /* Desktop Large (1200px+) */
     @media (min-width: 1200px) {
       .calendar-app {
@@ -957,10 +1000,10 @@
         padding: 16px; 
       }
       .days-grid { 
-        gap: 8px; 
+        gap: 6px; /* Giảm gap để tối ưu không gian */
       }
       .day-cell {
-        min-height: 55px;
+        min-height: 50px; /* Giảm chiều cao để tối ưu */
         border-radius: var(--radius-sm); 
       }
       .day-number {
@@ -985,10 +1028,6 @@
         width: min(400px, 95vw);
         padding: 20px;
       }
-      /* Sidebar trên mobile */
-      .sidebar {
-        width: min(300px, 85vw);
-      }
     }
 
     /* Mobile Portrait (320px - 480px) */
@@ -1008,19 +1047,19 @@
       }
       .header { 
         flex-direction: column;
-        gap: 10px; 
-        padding: 12px 16px; 
+        gap: 8px; /* Giảm gap */
+        padding: 10px 12px; /* Giảm padding */
         text-align: center;
       }
       .nav-buttons {
         order: 2;
         width: 100%;
         justify-content: center; /* (SỬA) */
-        gap: 12px; /* (MỚI) */
+        gap: 8px; /* Giảm gap */
       }
       #calendarDisplay { 
         order: 1; 
-        font-size: 18px; 
+        font-size: 16px; /* Giảm font size */
         margin-bottom: 0;
       }
       .date-selector {
@@ -1030,54 +1069,54 @@
       }
       .date-selector button {
         padding: 6px 12px;
-        font-size: 14px;
+        font-size: 13px; /* Giảm font size */
       }
       .icon-btn {
-        width: 40px; /* (SỬA) */
-        height: 40px; /* (SỬA) */
+        width: 36px; /* Giảm kích thước */
+        height: 36px; /* Giảm kích thước */
       }
       .icon-btn svg {
-        width: 18px;
-        height: 18px;
+        width: 16px; /* Giảm kích thước */
+        height: 16px; /* Giảm kích thước */
       }
       .calendar-container { 
-        padding: 12px; 
+        padding: 8px; /* Giảm padding */
       }
       .weekdays {
-        font-size: 12px;
-        margin-bottom: 8px;
+        font-size: 11px; /* Giảm font size */
+        margin-bottom: 6px; /* Giảm margin */
       }
       .days-grid { 
-        gap: 6px; 
+        gap: 4px; /* Giảm gap để tối ưu không gian */
       }
       .day-cell {
-        min-height: 48px;
+        min-height: 42px; /* Giảm chiều cao để tối ưu */
         border-radius: var(--radius-sm);
       }
       .day-number {
-        font-size: 13px;
-        width: 26px;
-        height: 26px;
+        font-size: 12px; /* Giảm font size */
+        width: 24px; /* Giảm kích thước */
+        height: 24px; /* Giảm kích thước */
       }
       .lunar-day {
-        font-size: 9px;
+        font-size: 8px; /* Giảm font size */
       }
       .event-dot {
-        width: 5px;
-        height: 5px;
-        bottom: 6px;
+        width: 4px; /* Giảm kích thước */
+        height: 4px; /* Giảm kích thước */
+        bottom: 5px; /* Điều chỉnh vị trí */
       }
       .add-btn { 
-        width: 48px; 
-        height: 48px; 
-        bottom: 16px; 
-        right: 16px; 
-        bottom: calc(16px + env(safe-area-inset-bottom)); /* (SỬA) */
-        right: calc(16px + env(safe-area-inset-right)); /* (SỬA) */
+        width: 44px; /* Giảm kích thước */
+        height: 44px; /* Giảm kích thước */
+        bottom: 12px; /* Giảm khoảng cách */
+        right: 12px; /* Giảm khoảng cách */
+        bottom: calc(12px + env(safe-area-inset-bottom)); /* (SỬA) */
+        right: calc(12px + env(safe-area-inset-right)); /* (SỬA) */
       }
       .add-btn svg {
-        width: 24px;
-        height: 24px;
+        width: 20px; /* Giảm kích thước */
+        height: 20px; /* Giảm kích thước */
       }
       .modal {
         padding: 0;
@@ -1185,6 +1224,7 @@
         transform: scale(0.98);
       }
       
+      /* Tối ưu kích thước cho touch */
       .day-cell {
         min-height: 44px;
       }
@@ -1199,6 +1239,33 @@
       .add-btn {
         min-width: 48px;
         min-height: 48px;
+      }
+      
+      /* Cải thiện sidebar trên mobile */
+      .sidebar {
+        padding: 20px;
+        padding-bottom: calc(20px + env(safe-area-inset-bottom));
+      }
+      
+      /* Tối ưu modal trên mobile */
+      .modal-content {
+        padding: 20px;
+        padding-bottom: calc(20px + env(safe-area-inset-bottom));
+      }
+      
+      /* Cải thiện các nút trong sidebar */
+      .switch {
+        width: 50px;
+        height: 28px;
+      }
+      .slider:before {
+        height: 20px;
+        width: 20px;
+        left: 4px;
+        bottom: 4px;
+      }
+      input:checked + .slider:before {
+        transform: translateX(22px);
       }
     }
 
