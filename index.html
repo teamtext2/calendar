@@ -1,291 +1,902 @@
 <!doctype html>
-<html lang="en">
+<html lang="vi">
 <head>
   <meta charset="utf-8" />
-  <link rel="stylesheet" href="css/styles.css">
-  <script src="js/main.js" defer></script>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <title>Pro Calendar App</title>
+  <meta name="theme-color" content="#ffffff">
   
-  <!-- SEO Meta Tags -->
-  <title>Text2 — Calendar</title>
-  <meta name="description" content="Text2 Calendar App - A professional, responsive calendar application for managing events, appointments, and schedules. Features dark mode, lunar calendar, event search, and data import/export." />
-  <meta name="keywords" content="calendar app, event management, schedule planner, appointment tracker, lunar calendar, dark mode calendar, responsive calendar, web calendar, Text2 calendar" />
-  <meta name="author" content="Text2" />
-  <meta name="robots" content="index, follow" />
-  <meta name="language" content="English" />
-  <meta name="revisit-after" content="7 days" />
-
-  <!-- Google tag (gtag.js) - GA4 -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ABCDEFG123"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-  
-    gtag('config', 'G-6J85STMJ14');
-  </script>
-
-  <!-- no translate -->
-  <meta name="google" content="notranslate"> 
-
-  <!-- text2 ads -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1722731267767270"
-  crossorigin="anonymous"></script>
-  
-  <!-- Open Graph Meta Tags -->
-  <meta property="og:title" content="Text2 — Calendar Pro | Professional Calendar & Event Management App" />
-  <meta property="og:description" content="Text2 Calendar App - A professional, responsive calendar application for managing events, appointments, and schedules. Features dark mode, lunar calendar, event search, and data import/export." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://text2calendar.com" />
-  <meta property="og:image" content="/favicon.ico" />
-  <meta property="og:image:width" content="32" />
-  <meta property="og:image:height" content="32" />
-  <meta property="og:image:alt" content="Text2 Calendar App - Professional Calendar Interface" />
-  <meta property="og:site_name" content="Text2 Calendar" />
-  <meta property="og:locale" content="en_US" />
-  
-  <!-- Twitter Card Meta Tags -->
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Text2 — Calendar Pro | Professional Calendar & Event Management App" />
-  <meta name="twitter:description" content="Text2 Calendar App - A professional, responsive calendar application for managing events, appointments, and schedules." />
-  <meta name="twitter:image" content="/favicon.ico" />
-  <meta name="twitter:image:alt" content="Text2 Calendar App Interface" />
-  <meta name="twitter:site" content="@Text2Calendar" />
-  <meta name="twitter:creator" content="@Text2Calendar" />
-  
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1722731267767270"
-  crossorigin="anonymous"></script> 
-  
-  <!-- Additional SEO Meta Tags -->
-  <meta name="application-name" content="Text2 Calendar" />
-  <meta name="msapplication-TileColor" content="#2563eb" />
-  <meta name="msapplication-config" content="/browserconfig.xml" />
-  <meta name="format-detection" content="telephone=no" />
-  
-  <!-- Canonical URL -->
-  <link rel="canonical" href="https://text2calendar.com" />
-  
-  <!-- Alternate Languages (if you plan to support multiple languages) -->
-  <link rel="alternate" hreflang="en" href="https://text2calendar.com" />
-  <link rel="alternate" hreflang="x-default" href="https://text2calendar.com" />
-  
-  <!-- Favicons and App Icons -->
-  <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico">
-  <link rel="manifest" href="/site.webmanifest">
-  
-  <!-- Preconnect for Performance -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  
-  <!-- DNS Prefetch for External Resources -->
-  <link rel="dns-prefetch" href="//fonts.googleapis.com">
-  <link rel="dns-prefetch" href="//fonts.gstatic.com">
-  
-  <!-- Structured Data (JSON-LD) -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Text2 Calendar Pro",
-    "alternateName": "Text2 Calendar App",
-    "description": "A professional, responsive calendar application for managing events, appointments, and schedules. Features dark mode, lunar calendar, event search, and data import/export.",
-    "url": "https://text2calendar.com",
-    "applicationCategory": "ProductivityApplication",
-    "operatingSystem": "Web Browser",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    },
-    "author": {
-      "@type": "Organization",
-      "name": "Text2"
-    },
-    "publisher": {
-      "@type": "Organization",
-      "name": "Text2"
-    },
-    "datePublished": "2024-01-01",
-    "dateModified": "2024-12-19",
-    "inLanguage": "en-US",
-    "isAccessibleForFree": true,
-    "browserRequirements": "Requires JavaScript. Requires HTML5.",
-    "softwareVersion": "1.0",
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.8",
-      "ratingCount": "150"
-    },
-    "featureList": [
-      "Event Management",
-      "Dark Mode Support",
-      "Lunar Calendar Display",
-      "Event Search",
-      "Data Import/Export",
-      "Responsive Design",
-      "Touch-Friendly Interface",
-      "Keyboard Navigation"
-    ]
-  }
-  </script>
-  
-  <meta name="google" content="notranslate">
-  <meta name="theme-color" content="#2563eb">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Text2 Calendar">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      /* Color Palette */
+      --primary: #4f46e5; /* Indigo 600 */
+      --primary-hover: #4338ca;
+      --bg-body: #f1f5f9;
+      --bg-surface: #ffffff;
+      --text-main: #0f172a;
+      --text-sub: #64748b;
+      --border: #e2e8f0;
+      --danger: #ef4444;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      
+      /* Layout Vars */
+      --header-h: 64px;
+      --nav-h: 60px;
+      --radius: 16px;
+    }
+
+    /* Dark Mode Overrides */
+    body.dark-mode {
+      --bg-body: #0f172a;
+      --bg-surface: #1e293b;
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+      --border: #334155;
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      height: 100vh;
+      height: 100svh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.3s;
+    }
+
+    /* --- LAYOUT CONTAINER --- */
+    .app-container {
+      display: flex;
+      flex: 1;
+      height: calc(100% - var(--header-h));
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* --- HEADER --- */
+    header {
+      height: var(--header-h);
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      z-index: 50;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .app-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .month-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-body);
+      padding: 4px;
+      border-radius: 10px;
+    }
+
+    .btn-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: 0.2s;
+    }
+    .btn-icon:hover { background: rgba(0,0,0,0.05); }
+    body.dark-mode .btn-icon:hover { background: rgba(255,255,255,0.1); }
+
+    .current-month-display {
+      font-weight: 600;
+      min-width: 140px;
+      text-align: center;
+      font-size: 15px;
+    }
+
+    .btn-today {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary);
+      background: rgba(79, 70, 229, 0.1);
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-today:hover { background: rgba(79, 70, 229, 0.2); }
+
+    /* --- MAIN CONTENT AREA (Split View Logic) --- */
+    .main-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 16px;
+    }
+
+    .side-panel {
+      width: 350px;
+      background: var(--bg-surface);
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      display: none; /* Hidden on Mobile by default */
+    }
+
+    /* --- CALENDAR GRID --- */
+    .weekdays-row {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      margin-bottom: 10px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--text-sub);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      padding-bottom: 80px; /* Space for FAB/Nav on mobile */
+    }
+
+    .day-cell {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      min-height: 100px; /* Taller on PC */
+      padding: 8px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+    
+    .day-cell:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .day-cell.inactive {
+      background: transparent;
+      border: none;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .day-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .day-num {
+      font-weight: 600;
+      font-size: 15px;
+      width: 28px; height: 28px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%;
+    }
+
+    .day-lunar {
+      font-size: 10px;
+      color: var(--text-sub);
+    }
+
+    .day-cell.today .day-num {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .day-cell.selected {
+      border: 2px solid var(--primary);
+    }
+
+    /* Event Indicators */
+    .event-dots-mobile {
+      display: flex; gap: 3px; justify-content: center; margin-top: auto;
+    }
+    .dot { width: 6px; height: 6px; border-radius: 50%; }
+
+    .event-bar-pc {
+      display: none; /* Hidden on mobile */
+      font-size: 11px;
+      padding: 2px 4px;
+      border-radius: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #fff;
+      margin-bottom: 2px;
+    }
+
+    /* --- SIDE PANEL / DETAILS (PC View) --- */
+    .panel-header {
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .panel-date-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .panel-subtitle {
+      color: var(--text-sub);
+      font-size: 14px;
+    }
+
+    /* --- EVENT LIST STYLES --- */
+    .event-list {
+      flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;
+    }
+    .event-card {
+      background: var(--bg-body);
+      padding: 12px;
+      border-radius: 12px;
+      border-left: 4px solid var(--primary);
+      display: flex; flex-direction: column; gap: 4px;
+      position: relative;
+    }
+    .event-time { font-size: 12px; color: var(--text-sub); font-weight: 500; }
+    .event-title { font-size: 15px; font-weight: 600; }
+    .event-desc { font-size: 13px; color: var(--text-sub); line-height: 1.4; }
+    
+    .btn-delete-event {
+      position: absolute; top: 8px; right: 8px;
+      opacity: 0; transition: 0.2s;
+      color: var(--danger); background: none; border: none; cursor: pointer;
+    }
+    .event-card:hover .btn-delete-event { opacity: 1; }
+
+    /* --- BOTTOM NAV (Mobile) --- */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-around; align-items: center;
+      z-index: 100;
+    }
+    .nav-item {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: none; border: none; gap: 4px;
+      color: var(--text-sub);
+      font-size: 10px; font-weight: 500;
+      width: 60px;
+    }
+    .nav-item.active { color: var(--primary); }
+    .nav-item svg { width: 24px; height: 24px; }
+
+    /* --- FAB (Floating Action Button) --- */
+    .fab {
+      position: fixed;
+      bottom: 80px; right: 20px;
+      width: 56px; height: 56px;
+      border-radius: 16px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      z-index: 90;
+      transition: transform 0.2s;
+    }
+    .fab:hover { transform: scale(1.05); }
+    .fab:active { transform: scale(0.95); }
+
+    /* --- MODALS / SHEETS --- */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 200;
+      opacity: 0; pointer-events: none;
+      transition: 0.3s;
+      backdrop-filter: blur(4px);
+      display: flex; align-items: flex-end; /* Mobile: bottom sheet */
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: auto; }
+
+    .sheet-content {
+      width: 100%;
+      background: var(--bg-surface);
+      border-radius: 24px 24px 0 0;
+      padding: 24px;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+    .modal-overlay.open .sheet-content { transform: translateY(0); }
+
+    /* --- FORMS --- */
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 500; color: var(--text-sub); }
+    .form-input {
+      width: 100%; padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg-body);
+      color: var(--text-main);
+      font-size: 15px; outline: none;
+      font-family: inherit;
+    }
+    .form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
+    
+    .row-2 { display: flex; gap: 12px; }
+    .col { flex: 1; }
+
+    .color-picker { display: flex; gap: 10px; margin-top: 8px; }
+    .color-opt {
+      width: 32px; height: 32px; border-radius: 8px; cursor: pointer;
+      border: 2px solid transparent; transition: 0.2s;
+    }
+    .color-opt.selected { border-color: var(--text-main); transform: scale(1.1); }
+
+    .btn-block {
+      width: 100%; padding: 14px;
+      background: var(--primary); color: white;
+      border: none; border-radius: 12px;
+      font-weight: 600; font-size: 16px;
+      cursor: pointer;
+    }
+
+    /* --- TOAST NOTIFICATION --- */
+    .toast-container {
+      position: fixed; top: 20px; right: 20px;
+      z-index: 300; display: flex; flex-direction: column; gap: 10px;
+    }
+    .toast {
+      background: var(--bg-surface);
+      color: var(--text-main);
+      padding: 12px 20px;
+      border-radius: 10px;
+      box-shadow: var(--shadow-lg);
+      border-left: 4px solid var(--primary);
+      font-size: 14px; font-weight: 500;
+      animation: slideIn 0.3s ease;
+      display: flex; align-items: center; gap: 8px;
+    }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    /* --- PC RESPONSIVE OPTIMIZATIONS --- */
+    @media (min-width: 1024px) {
+      /* Hide Mobile Nav & FAB */
+      .bottom-nav, .fab, .event-dots-mobile { display: none !important; }
+      
+      /* Show Side Panel & Event Bars */
+      .side-panel { display: flex; }
+      .event-bar-pc { display: block; }
+      
+      /* Layout Adjustments */
+      .calendar-grid { padding-bottom: 0; grid-template-rows: repeat(5, 1fr); height: 100%; }
+      .day-cell { min-height: 0; height: 100%; } /* Fill height */
+      
+      /* Modal becomes Center Dialog */
+      .modal-overlay { align-items: center; justify-content: center; }
+      .sheet-content {
+        width: 400px;
+        border-radius: 20px;
+        transform: scale(0.9); opacity: 0;
+      }
+      .modal-overlay.open .sheet-content { transform: scale(1); opacity: 1; }
+      
+      /* Scrollbar prettify */
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: var(--text-sub); }
+    }
+
+    /* Search View Overlay */
+    .full-view {
+      position: absolute; inset: 0;
+      background: var(--bg-body);
+      z-index: 60; padding: 20px;
+      display: none; flex-direction: column;
+    }
+    .full-view.active { display: flex; }
+  </style>
 </head>
 <body>
-  <a href="#main-content" class="skip-link">Skip to main content</a>
 
-  <!-- Sidebar (Mới) -->
-  <nav class="sidebar" id="sidebar" aria-label="Options menu">
-    <div class="sidebar-header">
-      <h2>Options</h2>
-      <button id="closeSidebarBtn" class="icon-btn" aria-label="Close menu">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+  <!-- Header -->
+  <header>
+    <div class="logo-area">
+      <div style="width: 36px; height: 36px; background: var(--primary); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">T2</div>
+      <span class="app-title">Calendar</span>
+    </div>
+
+    <div class="month-controls">
+      <button class="btn-icon" id="prevMonth">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
+      </button>
+      <span class="current-month-display" id="monthDisplay">loading...</span>
+      <button class="btn-icon" id="nextMonth">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
       </button>
     </div>
 
-    <div class="sidebar-content">
-      <div class="sidebar-section">
-        <h3>Search</h3>
-        <div class="input-group">
-          <label for="searchEventsInput">Search events</label>
-          <input type="search" id="searchEventsInput" placeholder="Enter event name...">
-          <ul id="searchResults"></ul>
-        </div>
-        <div class="input-group">
-          <label for="gotoDateInput">Go to date</label>
-          <input type="date" id="gotoDateInput">
-        </div>
-      </div>
-      
-      <div class="sidebar-section">
-        <h3>Settings</h3>
-        <div class="switch-group">
-          <label for="lunarToggle">Show Lunar</label>
-          <label class="switch">
-            <input type="checkbox" id="lunarToggle">
-            <span class="slider"></span>
-          </label>
-        </div>
-        <!-- (MỚI) Thêm theme toggle -->
-        <div class="switch-group">
-          <label for="themeToggle">Dark Mode</label>
-          <label class="switch">
-            <input type="checkbox" id="themeToggle">
-            <span class="slider"></span>
-          </label>
-        </div>
-      </div>
-
-      <div class="sidebar-section">
-        <h3>Data</h3>
-        <div class="input-group">
-          <label for="importFileBtn">Import events file (.json)</label>
-          <input type="file" id="importFileBtn" accept=".json">
-        </div>
-        <div class="input-group">
-           <button id="exportFileBtn" class="modal-btn btn-secondary" style="width: 100%;">Export events file</button>
-        </div>
-      </div>
+    <div style="display: flex; gap: 10px;">
+      <button class="btn-today" id="todayBtn">Today</button>
+      <button class="btn-icon" id="settingsBtn">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+      </button>
     </div>
-  </nav>
+  </header>
 
-  <!-- Overlay (Mới) -->
-  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <div class="app-container">
+    <!-- Main Calendar Area -->
+    <main class="main-panel" id="mainPanel">
+      <div class="weekdays-row">
+        <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+      </div>
+      <div class="calendar-grid" id="calendarGrid">
+        <!-- Generated via JS -->
+      </div>
+    </main>
 
-  <!-- Main App -->
-  <div class="calendar-app" id="main-content">
-    <div class="header">
-      <div class="nav-buttons">
-        <!-- Nút Menu (Mới) -->
-        <button id="menuToggleBtn" class="icon-btn" aria-label="Open menu">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-        </button>
-        <button id="prevMonthBtn" class="icon-btn" aria-label="Previous month">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-        </button>
-        <button id="nextMonthBtn" class="icon-btn" aria-label="Next month">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-        </button>
+    <!-- Side Panel (PC Only: Details & Events) -->
+    <aside class="side-panel" id="sidePanel">
+      <div class="panel-header">
+        <h2 class="panel-date-title" id="panelDateTitle">Select a date</h2>
+        <p class="panel-subtitle" id="panelLunarDate"></p>
       </div>
-      <div id="calendarDisplay"></div>
-      <div class="date-selector">
-        <button id="monthSelector">Month</button>
-        <button id="yearSelector">Year</button>
+      <div class="event-list" id="panelEventList">
+        <!-- Events for selected day on PC go here -->
       </div>
-    </div>
-
-    <div class="calendar-container">
-      <div class="weekdays">
-        <span>SUN</span><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span>
-      </div>
-      <div id="daysGrid" class="days-grid"></div>
-    </div>
+      <button class="btn-block" id="pcAddEventBtn" style="margin-top: auto;">+ Add Event</button>
+    </aside>
   </div>
 
-  <button id="addEventBtn" class="add-btn" aria-label="Add event">
-    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 28px; height: 28px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+  <!-- Mobile Floating Action Button -->
+  <button class="fab" id="fabAdd">
+    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
   </button>
 
-  <!-- Toast (Mới) -->
-  <div id="toast-notification" class="toast"></div>
+  <!-- Mobile Bottom Nav -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" onclick="switchView('calendar')">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+      Calendar
+    </button>
+    <button class="nav-item" onclick="switchView('search')">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      Search
+    </button>
+  </nav>
 
-  <!-- Modals -->
-  <div id="selectorModal" class="modal">
-    <div class="modal-content">
-      <h3 id="selectorTitle">Select...</h3>
-      <div id="selectorList"></div>
-      <div class="modal-actions">
-          <button onclick="closeModal('selectorModal')" class="modal-btn btn-secondary">Close</button>
-      </div>
+  <!-- Search View (Overlay) -->
+  <div class="full-view" id="searchView">
+    <div class="panel-header" style="display:flex; justify-content:space-between;">
+      <h2 class="panel-date-title">Search</h2>
+      <button class="btn-icon" onclick="switchView('calendar')">✕</button>
     </div>
+    <input type="text" class="form-input" id="searchInput" placeholder="Search events..." style="margin-bottom: 20px;">
+    <div class="event-list" id="searchResults"></div>
   </div>
 
-  <div id="eventFormModal" class="modal">
-    <div class="modal-content">
-      <h3>Add event for <span id="eventDateDisplay"></span></h3>
-      <form id="eventForm">
-        <input type="hidden" id="eventDayDate">
-        <input type="text" id="eventTitle" placeholder="Event title" required>
-        <textarea id="eventDetails" placeholder="Details (optional)" rows="3"></textarea>
-        
-        <!-- Color Picker (Mới) -->
-        <input type="hidden" id="eventColor" value="#2563eb">
-        <div class="color-picker" id="colorPicker">
-            <span class="color-swatch selected" data-color="#2563eb" style="background-color: #2563eb;" aria-label="Blue color"></span>
-            <span class="color-swatch" data-color="#e11d48" style="background-color: #e11d48;" aria-label="Red color"></span>
-            <span class="color-swatch" data-color="#16a34a" style="background-color: #16a34a;" aria-label="Green color"></span>
-            <span class="color-swatch" data-color="#f97316" style="background-color: #f97316;" aria-label="Orange color"></span>
-            <span class="color-swatch" data-color="#6d28d9" style="background-color: #6d28d9;" aria-label="Purple color"></span>
+  <!-- Add/Edit Modal (Shared PC/Mobile) -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="sheet-content">
+      <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+        <h3 style="font-size: 18px; font-weight: 700;">New Event</h3>
+        <button class="btn-icon" onclick="closeModal()">✕</button>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Title</label>
+        <input type="text" id="evtTitle" class="form-input" placeholder="Meeting, Birthday, etc." autofocus>
+      </div>
+
+      <div class="form-group row-2">
+        <div class="col">
+          <label class="form-label">Start Time</label>
+          <input type="time" id="evtStart" class="form-input">
         </div>
-
-        <div class="modal-actions">
-            <button type="button" onclick="closeModal('eventFormModal')" class="modal-btn btn-secondary">Cancel</button>
-            <button type="submit" class="modal-btn btn-primary">Save</button>
+        <div class="col">
+          <label class="form-label">End Time</label>
+          <input type="time" id="evtEnd" class="form-input">
         </div>
-      </form>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea id="evtDesc" class="form-input" rows="3" placeholder="Add details"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Color</label>
+        <div class="color-picker">
+          <div class="color-opt selected" style="background:#4f46e5" data-col="#4f46e5"></div>
+          <div class="color-opt" style="background:#ef4444" data-col="#ef4444"></div>
+          <div class="color-opt" style="background:#22c55e" data-col="#22c55e"></div>
+          <div class="color-opt" style="background:#f59e0b" data-col="#f59e0b"></div>
+          <div class="color-opt" style="background:#8b5cf6" data-col="#8b5cf6"></div>
+        </div>
+      </div>
+
+      <button class="btn-block" onclick="saveEvent()">Save Event</button>
     </div>
   </div>
 
-  <div id="eventDetailsModal" class="modal">
-    <div class="modal-content">
-      <h3>Events for <span id="popupEventDate"></span></h3>
-      <!-- (MỚI) Sửa lại eventDetailsContent -->
-      <div id="eventDetailsContent">
-          <!-- JS sẽ render danh sách sự kiện vào đây -->
+  <!-- Mobile Event View Modal (Bottom Sheet style for Mobile) -->
+  <div class="modal-overlay" id="mobileEventSheet">
+    <div class="sheet-content">
+      <div class="panel-header" style="display:flex; justify-content:space-between;">
+        <div id="mobileSheetDate" style="font-size: 18px; font-weight: 700;">Date</div>
+        <button class="btn-icon" onclick="closeMobileSheet()">✕</button>
       </div>
-      <!-- (MỚI) Sửa lại modal-actions -->
-      <div class="modal-actions">
-        <button onclick="closeModal('eventDetailsModal')" class="modal-btn btn-secondary">Close</button>
-        <button id="addAnotherEventBtn" class="modal-btn btn-primary">Add New</button>
-      </div>
+      <div class="event-list" id="mobileEventList" style="max-height: 300px; margin-bottom: 16px;"></div>
+      <button class="btn-block" onclick="openAddModal()">+ Add Event</button>
     </div>
   </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+<script>
+/** * APP STATE 
+ */
+const state = {
+  current: new Date(),
+  selectedDate: null, // Format YYYY-MM-DD
+  events: JSON.parse(localStorage.getItem('pro_events') || '{}'),
+  selectedColor: '#4f46e5'
+};
+
+// Utility: Format Date YYYY-MM-DD
+const fmtDate = (d) => d.toISOString().split('T')[0];
+// Utility: Check if PC
+const isPC = () => window.innerWidth >= 1024;
+
+/**
+ * DOM ELEMENTS
+ */
+const els = {
+  grid: document.getElementById('calendarGrid'),
+  monthDisplay: document.getElementById('monthDisplay'),
+  panelDate: document.getElementById('panelDateTitle'),
+  panelLunar: document.getElementById('panelLunarDate'),
+  panelList: document.getElementById('panelEventList'),
+  mobileList: document.getElementById('mobileEventList'),
+  mobileSheet: document.getElementById('mobileEventSheet'),
+  modal: document.getElementById('modalOverlay'),
+  searchView: document.getElementById('searchView')
+};
+
+/**
+ * CORE LOGIC
+ */
+function init() {
+  // Initial Render
+  state.selectedDate = fmtDate(new Date());
+  renderCalendar();
+  updateSidePanel();
+  
+  // Theme check
+  if(localStorage.getItem('pro_theme') === 'dark') document.body.classList.add('dark-mode');
+
+  // Event Listeners
+  document.getElementById('prevMonth').onclick = () => changeMonth(-1);
+  document.getElementById('nextMonth').onclick = () => changeMonth(1);
+  document.getElementById('todayBtn').onclick = () => {
+    state.current = new Date();
+    state.selectedDate = fmtDate(new Date());
+    renderCalendar();
+    updateSidePanel();
+  };
+  
+  // Modal Triggers
+  document.getElementById('fabAdd').onclick = openAddModal;
+  document.getElementById('pcAddEventBtn').onclick = openAddModal;
+  document.getElementById('modalOverlay').onclick = (e) => { if(e.target.id === 'modalOverlay') closeModal(); };
+  document.getElementById('mobileEventSheet').onclick = (e) => { if(e.target.id === 'mobileEventSheet') closeMobileSheet(); };
+
+  // Settings (Dark Mode Toggle for now)
+  document.getElementById('settingsBtn').onclick = () => {
+    document.body.classList.toggle('dark-mode');
+    localStorage.setItem('pro_theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+  };
+
+  // Color Picker
+  document.querySelectorAll('.color-opt').forEach(el => {
+    el.onclick = () => {
+      document.querySelectorAll('.color-opt').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      state.selectedColor = el.dataset.col;
+    }
+  });
+
+  // Search
+  document.getElementById('searchInput').oninput = handleSearch;
+}
+
+function renderCalendar() {
+  const y = state.current.getFullYear();
+  const m = state.current.getMonth();
+  els.monthDisplay.textContent = new Date(y, m).toLocaleString('en-US', { month: 'long', year: 'numeric' });
+
+  const firstDay = new Date(y, m, 1).getDay();
+  const daysInMonth = new Date(y, m + 1, 0).getDate();
+  
+  els.grid.innerHTML = '';
+  
+  // Empty cells
+  for(let i=0; i<firstDay; i++) {
+    const div = document.createElement('div');
+    div.className = 'day-cell inactive';
+    els.grid.appendChild(div);
+  }
+
+  // Days
+  const todayStr = fmtDate(new Date());
+  
+  for(let d=1; d<=daysInMonth; d++) {
+    const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const cell = document.createElement('div');
+    cell.className = 'day-cell';
+    if(dateStr === todayStr) cell.classList.add('today');
+    if(dateStr === state.selectedDate) cell.classList.add('selected');
+    
+    // Get events
+    const dayEvents = state.events[dateStr] || [];
+    
+    // HTML Structure
+    // Mobile: Dots, PC: Bars
+    const dotsHTML = dayEvents.length ? 
+      `<div class="event-dots-mobile">
+        ${dayEvents.slice(0,3).map(e=>`<div class="dot" style="background:${e.color}"></div>`).join('')}
+       </div>` : '';
+       
+    const barsHTML = dayEvents.length ? 
+      dayEvents.slice(0, 3).map(e => 
+        `<div class="event-bar-pc" style="background:${e.color}">${e.time ? e.time + ' ' : ''}${e.title}</div>`
+      ).join('') + (dayEvents.length > 3 ? `<div style="font-size:10px; color:var(--text-sub)">+${dayEvents.length-3} more</div>` : '') 
+      : '';
+
+    cell.innerHTML = `
+      <div class="day-header">
+        <span class="day-num">${d}</span>
+      </div>
+      ${dotsHTML}
+      ${barsHTML}
+    `;
+
+    cell.onclick = () => selectDate(dateStr, cell);
+    els.grid.appendChild(cell);
+  }
+}
+
+function selectDate(dateStr, cellEl) {
+  state.selectedDate = dateStr;
+  
+  // Update UI selection
+  document.querySelectorAll('.day-cell').forEach(c => c.classList.remove('selected'));
+  cellEl.classList.add('selected');
+
+  if(isPC()) {
+    updateSidePanel();
+  } else {
+    // On Mobile, open the Sheet
+    updateMobileSheet();
+    els.mobileSheet.classList.add('open');
+  }
+}
+
+function updateSidePanel() {
+  if(!state.selectedDate) return;
+  const [y,m,d] = state.selectedDate.split('-');
+  els.panelDate.textContent = `${d}/${m}/${y}`;
+  els.panelLunar.textContent = "Lunar Calendar info here"; // Placeholder
+  
+  renderEventList(els.panelList, state.selectedDate);
+}
+
+function updateMobileSheet() {
+  document.getElementById('mobileSheetDate').textContent = state.selectedDate;
+  renderEventList(els.mobileList, state.selectedDate);
+}
+
+function renderEventList(container, dateStr) {
+  container.innerHTML = '';
+  const evts = state.events[dateStr] || [];
+  
+  if(evts.length === 0) {
+    container.innerHTML = `<div style="text-align:center; color:var(--text-sub); margin-top:20px;">No events today.</div>`;
+    return;
+  }
+
+  evts.forEach((ev, idx) => {
+    const card = document.createElement('div');
+    card.className = 'event-card';
+    card.style.borderLeftColor = ev.color;
+    card.innerHTML = `
+      <div class="event-time">${ev.time || 'All day'} ${ev.end ? '- '+ev.end : ''}</div>
+      <div class="event-title">${ev.title}</div>
+      ${ev.desc ? `<div class="event-desc">${ev.desc}</div>` : ''}
+      <button class="btn-delete-event" onclick="deleteEvent('${dateStr}', ${idx})">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+      </button>
+    `;
+    container.appendChild(card);
+  });
+}
+
+/**
+ * ACTIONS
+ */
+function openAddModal() {
+  // Reset form
+  document.getElementById('evtTitle').value = '';
+  document.getElementById('evtDesc').value = '';
+  document.getElementById('evtStart').value = '';
+  document.getElementById('evtEnd').value = '';
+  
+  // If mobile sheet is open, close it first
+  els.mobileSheet.classList.remove('open');
+  
+  els.modal.classList.add('open');
+  setTimeout(() => document.getElementById('evtTitle').focus(), 100);
+}
+
+function closeModal() {
+  els.modal.classList.remove('open');
+}
+
+function closeMobileSheet() {
+  els.mobileSheet.classList.remove('open');
+}
+
+function saveEvent() {
+  const title = document.getElementById('evtTitle').value;
+  if(!title) {
+    showToast('Please enter a title', 'error');
+    return;
+  }
+
+  const newEvent = {
+    title,
+    desc: document.getElementById('evtDesc').value,
+    time: document.getElementById('evtStart').value,
+    end: document.getElementById('evtEnd').value,
+    color: state.selectedColor
+  };
+
+  if(!state.events[state.selectedDate]) state.events[state.selectedDate] = [];
+  state.events[state.selectedDate].push(newEvent);
+  // Sort by time
+  state.events[state.selectedDate].sort((a,b) => (a.time || '00:00').localeCompare(b.time || '00:00'));
+
+  localStorage.setItem('pro_events', JSON.stringify(state.events));
+  
+  closeModal();
+  renderCalendar();
+  if(isPC()) updateSidePanel();
+  else {
+    updateMobileSheet();
+    els.mobileSheet.classList.add('open'); // Re-open mobile sheet
+  }
+  
+  showToast('Event saved successfully!');
+}
+
+window.deleteEvent = (date, idx) => {
+  if(!confirm('Delete this event?')) return;
+  state.events[date].splice(idx, 1);
+  if(state.events[date].length === 0) delete state.events[date];
+  localStorage.setItem('pro_events', JSON.stringify(state.events));
+  
+  renderCalendar();
+  if(isPC()) updateSidePanel();
+  else updateMobileSheet();
+  
+  showToast('Event deleted', 'error');
+}
+
+function changeMonth(dir) {
+  state.current.setMonth(state.current.getMonth() + dir);
+  renderCalendar();
+}
+
+function switchView(view) {
+  if(view === 'search') els.searchView.classList.add('active');
+  else els.searchView.classList.remove('active');
+}
+
+function handleSearch(e) {
+  const val = e.target.value.toLowerCase();
+  const container = document.getElementById('searchResults');
+  container.innerHTML = '';
+  
+  if(val.length < 2) return;
+
+  Object.keys(state.events).forEach(date => {
+    state.events[date].forEach(ev => {
+      if(ev.title.toLowerCase().includes(val)) {
+        const div = document.createElement('div');
+        div.className = 'event-card';
+        div.style.borderLeftColor = ev.color;
+        div.style.cursor = 'pointer';
+        div.innerHTML = `
+          <div class="event-time">${date}</div>
+          <div class="event-title">${ev.title}</div>
+        `;
+        div.onclick = () => {
+          state.current = new Date(date);
+          state.selectedDate = date;
+          renderCalendar();
+          if(isPC()) updateSidePanel();
+          else openMobileSheetForDate(date);
+          switchView('calendar');
+        }
+        container.appendChild(div);
+      }
+    });
+  });
+}
+
+function openMobileSheetForDate(date) {
+    state.selectedDate = date;
+    updateMobileSheet();
+    els.mobileSheet.classList.add('open');
+}
+
+function showToast(msg, type='success') {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.style.borderLeftColor = type === 'error' ? 'var(--danger)' : 'var(--primary)';
+  t.textContent = msg;
+  document.getElementById('toastContainer').appendChild(t);
+  setTimeout(() => {
+    t.style.opacity = '0';
+    t.style.transform = 'translateX(100%)';
+    setTimeout(() => t.remove(), 300);
+  }, 3000);
+}
+
+// Start
+init();
+
+// Handle Resize to switch layouts dynamically
+window.onresize = () => {
+  if(isPC()) {
+    els.mobileSheet.classList.remove('open');
+    updateSidePanel();
+  }
+};
+
+</script>
 </body>
 </html>
